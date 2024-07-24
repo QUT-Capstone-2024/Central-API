@@ -46,7 +46,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/users").permitAll() // Allow access to user creation endpoint
-                        .requestMatchers("/api/users/**").authenticated() // Secure other user endpoints
+                        .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll() // Allow access to Swagger docs
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception -> exception
