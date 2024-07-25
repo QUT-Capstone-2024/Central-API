@@ -103,7 +103,6 @@ public class UserController {
         existingUser.setPhoneNumber(user.getPhoneNumber());
         existingUser.setUserType(user.getUserType());
         existingUser.setUserRole(user.getUserRole());
-        existingUser.setPropertyIds(user.getPropertyIds());
 
         User updatedUser = userService.saveUser(existingUser);
         return ResponseEntity.ok(updatedUser);

@@ -2,7 +2,7 @@ package com.cl.centralapi.model;
 
 import com.cl.centralapi.enums.UserType;
 import com.cl.centralapi.enums.UserRole;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.List;
 
@@ -22,21 +22,20 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
-    @ElementCollection(fetch = FetchType.LAZY)
-    @CollectionTable(name = "user_property_ids", joinColumns = @JoinColumn(name = "user_id"))
-    @Column(name = "property_id")
-    private List<Long> propertyIds;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Collection> collections;
 
     public User() {}
 
-    public User(String name, String email, String password, String phoneNumber, UserType userType, UserRole userRole, List<Long> propertyIds) {
+    public User(String name, String email, String password, String phoneNumber, UserType userType, UserRole userRole, List<Collection> collections) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.phoneNumber = phoneNumber;
         this.userType = userType;
         this.userRole = userRole;
-        this.propertyIds = propertyIds;
+        this.collections = collections;
     }
 
     // Getters & Setters
@@ -96,11 +95,11 @@ public class User {
         this.userRole = userRole;
     }
 
-    public List<Long> getPropertyIds() {
-        return propertyIds;
+    public List<Collection> getCollections() {
+        return collections;
     }
 
-    public void setPropertyIds(List<Long> propertyIds) {
-        this.propertyIds = propertyIds;
+    public void setCollections(List<Collection> collections) {
+        this.collections = collections;
     }
 }
