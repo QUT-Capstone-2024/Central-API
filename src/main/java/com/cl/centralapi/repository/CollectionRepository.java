@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CollectionRepository extends JpaRepository<Collection, Long> {
-    Optional<Collection> findByUserAndName(User user, String name);
+    Optional<Collection> findByUserAndAddress(User user, String address);
 
     List<Collection> findByUser(User user);
 }

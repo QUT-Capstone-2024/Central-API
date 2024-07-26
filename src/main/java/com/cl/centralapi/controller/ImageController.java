@@ -1,7 +1,9 @@
 package com.cl.centralapi.controller;
 
+import com.cl.centralapi.enums.ImageTags;
 import com.cl.centralapi.model.Collection;
 import com.cl.centralapi.service.ImageService;
+import com.cl.centralapi.security.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -40,10 +42,13 @@ public class ImageController {
     @PostMapping("/upload")
     public ResponseEntity<?> uploadImage(
             @RequestParam("userId") Long userId,
-            @RequestParam("collectionName") String collectionName,
-            @RequestParam("file") MultipartFile file) {
+            @RequestParam("address") String collectionName,
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("tag") ImageTags tag,
+            @RequestParam(value = "customTag", required = false) String customTag,
+            @RequestParam(value = "description", required = false) String description) {
         try {
-            URI location = imageService.uploadImage(userId, collectionName, file);
+            URI location = imageService.uploadImage(userId, collectionName, file, tag, customTag, description);
             return ResponseEntity.created(location).body("Image uploaded successfully: " + location.toString());
         } catch (IOException e) {
             return ResponseEntity.status(500).body("Error uploading image: " + e.getMessage());
@@ -60,7 +65,7 @@ public class ImageController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content) })
     @GetMapping("/collections")
-    @PreAuthorize("principal.userType == T(com.cl.centralapi.enums.UserType).CL_ADMIN or #userId == principal.id")
+     @PreAuthorize("@imageService.isUserAdmin(principal.userType) or @imageService.isCollectionOwnedByUser(#collectionId, T(com.cl.centralapi.security.CustomUserDetails).id)")
     public ResponseEntity<?> getCollectionsByUserId(@RequestParam("userId") Long userId) {
         List<Collection> collections = imageService.getCollectionsByUserId(userId);
         return ResponseEntity.ok(collections);
@@ -76,13 +81,49 @@ public class ImageController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content)})
     @GetMapping("/collections/{collectionId}/images")
-    @PreAuthorize("principal.userType == T(com.cl.centralapi.enums.UserType).CL_ADMIN or @imageService.isCollectionOwnedByUser(#collectionId, prinicipal.id)")
+    @PreAuthorize("@imageService.isUserAdmin(principal.userType) or @imageService.isCollectionOwnedByUser(#collectionId, T(com.cl.centralapi.security.CustomUserDetails).id)")
     public ResponseEntity<?> getImagesByCollectionId(@PathVariable Long collectionId) {
         try {
             Collection collection = imageService.getCollectionById(collectionId);
             return ResponseEntity.ok(collection.getImages());
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(404).body("Collection not found");
+        }
+    }
+
+    @Operation(summary = "Delete an image collection", description = "This endpoint allows you to delete an image collection along with all images in it.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Collection deleted successfully"),
+            @ApiResponse(responseCode = "404", description = "Collection not found"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @DeleteMapping("/collections/{collectionId}")
+//    @PreAuthorize("@imageService.isUserAdmin(principal.userType) or @imageService.isCollectionOwnedByUser(#collectionId, T(com.cl.centralapi.security.CustomUserDetails).id)")
+    public ResponseEntity<?> deleteCollectionById(@PathVariable Long collectionId) {
+        try {
+            imageService.deleteCollectionById(collectionId);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(404).body("Collection not found");
+        }
+    }
+
+    @Operation(summary = "Delete an image", description = "This endpoint allows you to delete an individual image from a collection.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Image deleted successfully"),
+            @ApiResponse(responseCode = "404", description = "Image not found"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @DeleteMapping("/collections/{collectionId}/images/{imageId}")
+    @PreAuthorize("@imageService.isUserAdmin(principal.userType) or @imageService.isCollectionOwnedByUser(#collectionId, T(com.cl.centralapi.security.CustomUserDetails).id)")
+    public ResponseEntity<?> deleteImageById(@PathVariable Long collectionId, @PathVariable Long imageId) {
+        try {
+            imageService.deleteImage(collectionId, imageId);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(404).body("Image not found");
         }
     }
 }
