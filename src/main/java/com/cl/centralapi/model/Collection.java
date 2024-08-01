@@ -27,6 +27,9 @@ public class Collection {
     @Column(nullable = false)
     private Status status = Status.PENDING;
 
+    @Column(nullable = false)
+    private Double approvedPercentage = 0.0;
+
     // Non-nullable properties
     @Column(nullable = false)
     private String address;
@@ -62,7 +65,7 @@ public class Collection {
 
     public Collection(User user, List<Image> images, Status status, String address, Double price, String description,
                       Integer internalSize, Integer bedrooms, Integer bathrooms, Boolean aircon, Boolean heating, Integer parking,
-                      Double externalSize, Integer levels, Boolean pool, List<String> extraFeatures) {
+                      Double externalSize, Integer levels, Boolean pool, List<String> extraFeatures, Double approvedPercentage) {
         this.user = user;
         this.images = images;
         this.status = status != null? status : Status.PENDING;
@@ -79,6 +82,7 @@ public class Collection {
         this.levels = levels;
         this.pool = pool;
         this.extraFeatures = extraFeatures;
+        this.approvedPercentage = approvedPercentage;
     }
 
     // Getters and Setters
@@ -216,5 +220,13 @@ public class Collection {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public Double getApprovedPercentage() {
+        return approvedPercentage;
+    }
+
+    public void setApprovedPercentage(Double approvedPercentage) {
+        this.approvedPercentage = approvedPercentage;
     }
 }
