@@ -1,5 +1,6 @@
 package com.cl.centralapi.controller;
 
+import com.cl.centralapi.exceptions.EmailAlreadyUsedException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -36,7 +37,7 @@ public class UserController {
     @PostMapping
     public ResponseEntity<?> createUser(@RequestBody User user) {
         User savedUser = userService.saveUser(user);
-        return ResponseEntity.ok(savedUser);
+        return ResponseEntity.ok("User created successfully");
     }
 
     @Operation(summary = "Get user by ID", description = "This endpoint allows you to retrieve a user by their ID.")
@@ -90,23 +91,16 @@ public class UserController {
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('ROLE_INTERNAL') and principal.userType == T(com.cl.centralapi.enums.UserType).CL_ADMIN or #id == principal.id")
     public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User user, @AuthenticationPrincipal UserDetails currentUser) {
-        // Check if the user exists
-        User existingUser = userService.findById(id).orElse(null);
-        if (existingUser == null) {
-            return ResponseEntity.notFound().build();
+        try {
+            User updatedUser = userService.updateUser(id, user);
+            return ResponseEntity.ok(updatedUser);
+        } catch (EmailAlreadyUsedException e) {
+            return ResponseEntity.status(409).body(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error updating user: " + e.getMessage());
         }
-
-        // Update fields
-        existingUser.setName(user.getName());
-        existingUser.setEmail(user.getEmail());
-        existingUser.setPassword(user.getPassword());
-        existingUser.setPhoneNumber(user.getPhoneNumber());
-        existingUser.setUserType(user.getUserType());
-        existingUser.setUserRole(user.getUserRole());
-        existingUser.setPropertyIds(user.getPropertyIds());
-
-        User updatedUser = userService.saveUser(existingUser);
-        return ResponseEntity.ok(updatedUser);
     }
 
     @Operation(summary = "Delete user", description = "This endpoint allows you to delete a user by their ID.")
@@ -121,6 +115,6 @@ public class UserController {
     @PreAuthorize("hasAuthority('INTERNAL') and principal.userType == T(com.cl.centralapi.enums.UserType).CL_ADMIN")
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {
         userService.deleteUserById(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(200).body("User deleted successfully");
     }
 }
