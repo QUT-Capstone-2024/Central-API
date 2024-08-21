@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 import com.cl.centralapi.model.User;
 import com.cl.centralapi.service.UserService;
 
+import java.util.Collections;
+
 @RestController
 @RequestMapping("/api/users")
 @Tag(name = "User Management", description = "Endpoints for managing users")
@@ -37,8 +39,9 @@ public class UserController {
     @PostMapping
     public ResponseEntity<?> createUser(@RequestBody User user) {
         User savedUser = userService.saveUser(user);
-        return ResponseEntity.ok("User created successfully");
+        return ResponseEntity.ok(Collections.singletonMap("message", "User created successfully"));
     }
+
 
     @Operation(summary = "Get user by ID", description = "This endpoint allows you to retrieve a user by their ID.")
     @ApiResponses(value = {
