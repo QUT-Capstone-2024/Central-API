@@ -52,16 +52,16 @@ public class ImageService {
         // Ensure a tag is provided (either from the enum or a custom tag)
         if (tag == null && (customTag == null || customTag.isEmpty())) {
             throw new IllegalArgumentException("An image must have either a tag or a custom tag.");
-        }
+    }
 
-        // Default status is PENDING
-        Status status = Status.PENDING;
+    // Default status is PENDING
+    Status status = Status.PENDING;
 
-        // Create the Image instance with the new constructor
-        Image image = new Image("https://" + BUCKET_NAME + ".s3.amazonaws.com/" + key, collection, tag, status, customTag, description);
+    // Create the Image instance with the new constructor
+    Image image = new Image("https://" + BUCKET_NAME + ".s3.amazonaws.com/" + key, collection, tag, status, customTag, description);
         imageRepository.save(image);
 
-        // Recalculate collection status
+    // Recalculate collection status
         autoUpdateCollectionStatus(collection.getId());
 
         return URI.create(image.getUrl());
