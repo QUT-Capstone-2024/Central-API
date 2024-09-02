@@ -53,10 +53,10 @@ public class ImageService {
         // Ensure a tag is provided (either from the enum or a custom tag)
         if (tag == null && (customTag == null || customTag.isEmpty())) {
             throw new IllegalArgumentException("An image must have either a tag or a custom tag.");
-        }
+    }
 
-        // Default status is PENDING
-        Status status = Status.PENDING;
+    // Default status is PENDING
+    Status status = Status.PENDING;
 
         // Create the Image instance with the new constructor
         Image image = new Image(
@@ -70,9 +70,10 @@ public class ImageService {
         );
 
         // Save the image to the repository
+
         imageRepository.save(image);
 
-        // Recalculate collection status
+    // Recalculate collection status
         autoUpdateCollectionStatus(collection.getId());
 
         return URI.create(image.getImageUrl());
