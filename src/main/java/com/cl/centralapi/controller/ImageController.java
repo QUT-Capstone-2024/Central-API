@@ -74,7 +74,7 @@ public class ImageController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Images retrieved successfully",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Collection.class)) }),
+                            schema = @Schema(implementation = Image.class)) }),
             @ApiResponse(responseCode = "404", description = "Collection not found",
                     content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal server error",
@@ -83,8 +83,8 @@ public class ImageController {
     @PreAuthorize("@imageService.isUserAdmin(principal.userType) or @imageService.isCollectionOwnedByUser(#collectionId, T(com.cl.centralapi.security.CustomUserDetails).id)")
     public ResponseEntity<?> getImagesByCollectionId(@PathVariable Long collectionId) {
         try {
-            Collection collection = imageService.getCollectionById(collectionId);
-            return ResponseEntity.ok(collection.getImages());
+            List<Image> images = imageService.getImagesByCollectionId(collectionId);
+            return ResponseEntity.ok(images);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(404).body("Collection not found");
         }
@@ -102,7 +102,7 @@ public class ImageController {
     public ResponseEntity<?> deleteCollectionById(@PathVariable Long collectionId) {
         try {
             imageService.deleteCollectionById(collectionId);
-            return ResponseEntity.status(200).body("Collection deleted successfully");
+            return ResponseEntity.status(204).build(); // No content for successful deletion
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(404).body("Collection not found");
         }
@@ -120,7 +120,7 @@ public class ImageController {
     public ResponseEntity<?> deleteImageById(@PathVariable Long collectionId, @PathVariable Long imageId) {
         try {
             imageService.deleteImage(collectionId, imageId);
-            return ResponseEntity.status(200).body("Image deleted successfully");
+            return ResponseEntity.status(204).build(); // No content for successful deletion
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(404).body("Image not found");
         }

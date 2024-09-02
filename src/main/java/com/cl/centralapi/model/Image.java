@@ -5,6 +5,8 @@ import com.cl.centralapi.enums.ImageTags;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
+import java.time.ZonedDateTime;
+
 @Entity
 public class Image {
 
@@ -12,36 +14,43 @@ public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String url;
+
+    @Column(nullable = false)
+    private String imageUrl; // Matches "imageUrl" in JSON
+
+    @Column(nullable = false)
+    private ZonedDateTime uploadTime; // Matches "uploadTime" in JSON
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ImageTags imageTag; // Matches "imageTag" in JSON
+
+    @Column(nullable = false, unique = true)
+    private String imageId; // Matches "imageId" in JSON
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Status imageStatus; // Matches "imageStatus" in JSON
+
+    @Column(length = 500) // Adjust length as needed
+    private String rejectionReason; // Matches "rejectionReason" in JSON
 
     @ManyToOne
     @JoinColumn(name = "collection_id", nullable = false)
     @JsonBackReference
-    private Collection collection;
-
-    // Non-nullable properties
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private ImageTags tag;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Status status = Status.PENDING;
-
-    // Nullable properties
-    private String customTag;
-    private String description;
+    private Collection collection; // Relationship to Collection
 
     // Constructors
     public Image() {}
 
-    public Image(String url, Collection collection, ImageTags tag, Status status, String customTag, String description) {
-        this.url = url;
+    public Image(String imageUrl, ZonedDateTime uploadTime, ImageTags imageTag, String imageId, Status imageStatus, String rejectionReason, Collection collection) {
+        this.imageUrl = imageUrl;
+        this.uploadTime = uploadTime;
+        this.imageTag = imageTag;
+        this.imageId = imageId;
+        this.imageStatus = imageStatus != null ? imageStatus : Status.PENDING;
+        this.rejectionReason = rejectionReason;
         this.collection = collection;
-        this.tag = tag;
-        this.status = status != null? status : Status.PENDING;
-        this.customTag = customTag;
-        this.description = description;
     }
 
     // Getters and Setters
@@ -53,12 +62,52 @@ public class Image {
         this.id = id;
     }
 
-    public String getUrl() {
-        return url;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public ZonedDateTime getUploadTime() {
+        return uploadTime;
+    }
+
+    public void setUploadTime(ZonedDateTime uploadTime) {
+        this.uploadTime = uploadTime;
+    }
+
+    public ImageTags getImageTag() {
+        return imageTag;
+    }
+
+    public void setImageTag(ImageTags imageTag) {
+        this.imageTag = imageTag;
+    }
+
+    public String getImageId() {
+        return imageId;
+    }
+
+    public void setImageId(String imageId) {
+        this.imageId = imageId;
+    }
+
+    public Status getImageStatus() {
+        return imageStatus;
+    }
+
+    public void setImageStatus(Status imageStatus) {
+        this.imageStatus = imageStatus;
+    }
+
+    public String getRejectionReason() {
+        return rejectionReason;
+    }
+
+    public void setRejectionReason(String rejectionReason) {
+        this.rejectionReason = rejectionReason;
     }
 
     public Collection getCollection() {
@@ -67,37 +116,5 @@ public class Image {
 
     public void setCollection(Collection collection) {
         this.collection = collection;
-    }
-
-    public ImageTags getTag() {
-        return tag;
-    }
-
-    public void setTag(ImageTags tag) {
-        this.tag = tag;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public String getCustomTag() {
-        return customTag;
-    }
-
-    public void setCustomTag(String customTag) {
-        this.customTag = customTag;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 }
