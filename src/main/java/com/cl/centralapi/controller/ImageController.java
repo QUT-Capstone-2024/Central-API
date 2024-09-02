@@ -16,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import java.util.Map;
+
 
 import java.io.IOException;
 import java.net.URI;
@@ -47,10 +49,13 @@ public class ImageController {
             @RequestParam(value = "customTag", required = false) String customTag,
             @RequestParam(value = "description", required = false) String description) {
         try {
-            URI location = imageService.uploadImage(userId, address, file, tag, customTag, description);
-            return ResponseEntity.created(location).body("Image uploaded successfully: " + location.toString());
+            // Upload the image to S3 and get the URL and classification result
+            Map<String, Object> result = imageService.uploadImageAndClassify(userId, address, file, tag, customTag, description);
+
+            // Return the map directly as the response body
+            return ResponseEntity.ok(result);
         } catch (IOException e) {
-            return ResponseEntity.status(500).body("Error uploading image: " + e.getMessage());
+            return ResponseEntity.status(500).body("Error uploading and classifying image: " + e.getMessage());
         }
     }
 

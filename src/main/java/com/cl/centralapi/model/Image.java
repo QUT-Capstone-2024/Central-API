@@ -26,7 +26,7 @@ public class Image {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Status status = Status.PENDING;
+    private Status status = Status.UNTAGGED;
 
     // Nullable properties
     private String customTag;
@@ -39,7 +39,7 @@ public class Image {
         this.url = url;
         this.collection = collection;
         this.tag = tag;
-        this.status = status != null? status : Status.PENDING;
+        this.status = status != null? status : Status.UNTAGGED;
         this.customTag = customTag;
         this.description = description;
     }
