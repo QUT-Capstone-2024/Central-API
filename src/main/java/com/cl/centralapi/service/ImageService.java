@@ -17,6 +17,7 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.IOException;
 import java.net.URI;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,34 +59,39 @@ public class ImageService {
         Status status = Status.PENDING;
 
         // Create the Image instance with the new constructor
-        Image image = new Image("https://" + BUCKET_NAME + ".s3.amazonaws.com/" + key, collection, tag, status, customTag, description);
+        Image image = new Image(
+                "https://" + BUCKET_NAME + ".s3.amazonaws.com/" + key, // imageUrl
+                ZonedDateTime.now(), // uploadTime
+                tag, // imageTag
+                generateImageId(), // imageId
+                status, // imageStatus
+                customTag, // rejectionReason (if you want to use customTag as rejectionReason, otherwise set it to null)
+                collection // collection
+        );
+
+        // Save the image to the repository
         imageRepository.save(image);
 
         // Recalculate collection status
         autoUpdateCollectionStatus(collection.getId());
 
-        return URI.create(image.getUrl());
+        return URI.create(image.getImageUrl());
     }
 
-    private Collection createNewCollection(User user, String address) {
+    private Collection createNewCollection(User user, String propertyAddress) {
         Collection collection = new Collection(
-                user, // user
-                null, // images
-                null, // status
-                address, // address
-                0.0, // price
-                "default description", // description
-                0, // internalSize
-                0, // bedrooms
-                0, // bathrooms
-                null, // aircon
-                null, // heating
-                null, // parking
-                null, // externalSize
-                null, // levels
-                null, // pool
-                new ArrayList<>(), // extraFeatures
-                0.0 // approvedPercentage
+                null, // id (will be auto-generated)
+                "default description", // propertyDescription
+                propertyAddress, // propertyAddress
+                new ArrayList<>(), // imageUrls (default empty list)
+                "default-collection-id", // collectionId (default or generated)
+                0, // propertySize (default)
+                user.getId(), // propertyOwnerId (assuming the user's ID is used here)
+                0, // bedrooms (default)
+                0, // bathrooms (default)
+                0, // parkingSpaces (default)
+                Status.PENDING, // approvalStatus (default)
+                "unknown" // propertyType (default, change as needed)
         );
         return collectionRepository.save(collection);
     }
@@ -100,10 +106,21 @@ public class ImageService {
                 .orElseThrow(() -> new IllegalArgumentException("Collection not found."));
     }
 
-    public boolean isCollectionOwnedByUser(Long userId, Long collectionId) {
-        Collection collection = collectionRepository.findById(collectionId).orElseThrow(() -> new IllegalArgumentException("Collection not found"));
-        User user = collection.getUser();
-        return user != null && user.getId().equals(userId);
+    public List<Image> getImagesByCollectionId(Long collectionId) {
+        // Ensure the collection exists
+        Collection collection = collectionRepository.findById(collectionId)
+                .orElseThrow(() -> new IllegalArgumentException("Collection not found"));
+
+        // Fetch and return all images for this collection
+        return imageRepository.findByCollectionId(collectionId);
+    }
+
+    public boolean isCollectionOwnedByUser(String userId, Long collectionId) {
+        Collection collection = collectionRepository.findById(collectionId)
+                .orElseThrow(() -> new IllegalArgumentException("Collection not found"));
+
+        Long collectionOwnerId = collection.getPropertyOwnerId();
+        return collectionOwnerId != null && collectionOwnerId.equals(userId);
     }
 
     public boolean isUserAdmin(Long userId) {
@@ -135,20 +152,18 @@ public class ImageService {
         Image existingImage = imageRepository.findById(imageId)
                 .orElseThrow(() -> new IllegalArgumentException("Image not found"));
 
-        if (updatedImage.getUrl() != null) {
-            existingImage.setUrl(updatedImage.getUrl());
+        // Update fields if provided
+        if (updatedImage.getImageUrl() != null) {
+            existingImage.setImageUrl(updatedImage.getImageUrl());
         }
-        if (updatedImage.getTag() != null) {
-            existingImage.setTag(updatedImage.getTag());
+        if (updatedImage.getImageTag() != null) {
+            existingImage.setImageTag(updatedImage.getImageTag());
         }
-        if (updatedImage.getCustomTag() != null) {
-            existingImage.setCustomTag(updatedImage.getCustomTag());
+        if (updatedImage.getRejectionReason() != null) {
+            existingImage.setRejectionReason(updatedImage.getRejectionReason());
         }
-        if (updatedImage.getDescription() != null) {
-            existingImage.setDescription(updatedImage.getDescription());
-        }
-        if (updatedImage.getStatus() != null) {
-            existingImage.setStatus(updatedImage.getStatus());
+        if (updatedImage.getImageStatus() != null) {
+            existingImage.setImageStatus(updatedImage.getImageStatus());
         }
 
         imageRepository.save(existingImage);
@@ -161,17 +176,19 @@ public class ImageService {
         Image image = imageRepository.findById(imageId)
                 .orElseThrow(() -> new IllegalArgumentException("Image not found"));
 
-        image.setStatus(newStatus);
+        image.setImageStatus(newStatus);
 
         // Automatically update the image status when all images in a collection = APPROVED
         autoUpdateCollectionStatus(image.getCollection().getId());
     }
 
     private void autoUpdateCollectionStatus(Long collectionId) {
+        // Find the collection by ID
         Collection collection = collectionRepository.findById(collectionId)
                 .orElseThrow(() -> new IllegalArgumentException("Collection not found"));
 
-        List<Image> images = collection.getImages();
+        // Find all images associated with the collection
+        List<Image> images = imageRepository.findByCollectionId(collectionId);
 
         // Counters
         double imageCount = images.size();
@@ -180,24 +197,23 @@ public class ImageService {
 
         // Update counters based on image status
         for (Image image : images) {
-            if (image.getStatus() == Status.APPROVED) {
+            if (image.getImageStatus() == Status.APPROVED) {
                 approvedImageCount++;
-            } else if (image.getStatus() == Status.REJECTED) {
+            } else if (image.getImageStatus() == Status.REJECTED) {
                 hasRejectedImages = true;
             }
         }
 
         // Adjust collection status based on image statuses
         if (hasRejectedImages) {
-            collection.setStatus(Status.REJECTED);
+            collection.setApprovalStatus(Status.REJECTED);
         } else if (approvedImageCount == imageCount) {
-            collection.setStatus(Status.APPROVED);
+            collection.setApprovalStatus(Status.APPROVED);
         } else {
-            collection.setStatus(Status.PENDING);
+            collection.setApprovalStatus(Status.PENDING);
         }
 
-        // Update the approved % and save
-        collection.setApprovedPercentage((approvedImageCount / imageCount) * 100);
+        // Save the updated collection
         collectionRepository.save(collection);
     }
 
@@ -205,11 +221,11 @@ public class ImageService {
         Collection existingCollection = collectionRepository.findById(collectionId)
                 .orElseThrow(() -> new IllegalArgumentException("Collection not found"));
 
-        if (updatedCollection.getStatus() != null) {
-            existingCollection.setStatus(updatedCollection.getStatus());
+        if (updatedCollection.getApprovalStatus() != null) {
+            existingCollection.setApprovalStatus(updatedCollection.getApprovalStatus());
         }
-        if (updatedCollection.getDescription() != null) {
-            existingCollection.setDescription(updatedCollection.getDescription());
+        if (updatedCollection.getPropertyDescription() != null) {
+            existingCollection.setPropertyDescription(updatedCollection.getPropertyDescription());
         }
         // Add other properties as needed
 
@@ -220,7 +236,12 @@ public class ImageService {
         Collection collection = collectionRepository.findById(collectionId)
                 .orElseThrow(() -> new IllegalArgumentException("Collection not found"));
 
-        collection.setStatus(status);
+        collection.setApprovalStatus(status);
         collectionRepository.save(collection);
+    }
+
+    private String generateImageId() {
+        // Generate a unique image ID, implementation can vary
+        return "img" + System.currentTimeMillis(); // Example implementation
     }
 }

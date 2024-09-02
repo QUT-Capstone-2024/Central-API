@@ -14,34 +14,22 @@ public class Collection {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    @JsonBackReference
-    private User user;
-
-    @OneToMany(mappedBy = "collection", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference
-    private List<Image> images;
-
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Status status = Status.PENDING;
+    private String propertyDescription;
 
     @Column(nullable = false)
-    private Double approvedPercentage = 0.0;
+    private String propertyAddress;
 
-    // Non-nullable properties
-    @Column(nullable = false)
-    private String address;
+    private List<String> imageUrls;
 
     @Column(nullable = false)
-    private Double price;
+    private String collectionId;
 
     @Column(nullable = false)
-    private String description;
+    private Integer propertySize;
 
     @Column(nullable = false)
-    private Integer internalSize;
+    private Long propertyOwnerId;
 
     @Column(nullable = false)
     private Integer bedrooms;
@@ -49,40 +37,33 @@ public class Collection {
     @Column(nullable = false)
     private Integer bathrooms;
 
-    // Nullable properties
-    private Boolean aircon;
-    private Boolean heating;
-    private Integer parking;
-    private Double externalSize;
-    private Integer levels;
-    private Boolean pool;
+    private Integer parkingSpaces;
 
-    @ElementCollection
-    private List<String> extraFeatures;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Status approvalStatus = Status.PENDING;
+
+    @Column(nullable = false)
+    private String propertyType;
 
     // Constructors
     public Collection() {}
 
-    public Collection(User user, List<Image> images, Status status, String address, Double price, String description,
-                      Integer internalSize, Integer bedrooms, Integer bathrooms, Boolean aircon, Boolean heating, Integer parking,
-                      Double externalSize, Integer levels, Boolean pool, List<String> extraFeatures, Double approvedPercentage) {
-        this.user = user;
-        this.images = images;
-        this.status = status != null? status : Status.PENDING;
-        this.address = address;
-        this.price = price;
-        this.description = description;
-        this.internalSize = internalSize;
+    public Collection(Long id, String propertyDescription, String propertyAddress, List imageUrls, String collectionId,
+                      Integer propertySize, Long propertyOwnerId, Integer bedrooms, Integer bathrooms,
+                      Integer parkingSpaces, Status approvalStatus, String propertyType) {
+        this.id = id;
+        this.propertyDescription = propertyDescription;
+        this.propertyAddress = propertyAddress;
+        this.imageUrls = imageUrls;
+        this.collectionId = collectionId;
+        this.propertySize = propertySize;
+        this.propertyOwnerId = propertyOwnerId;
         this.bedrooms = bedrooms;
         this.bathrooms = bathrooms;
-        this.aircon = aircon;
-        this.heating = heating;
-        this.parking = parking;
-        this.externalSize = externalSize;
-        this.levels = levels;
-        this.pool = pool;
-        this.extraFeatures = extraFeatures;
-        this.approvedPercentage = approvedPercentage;
+        this.parkingSpaces = parkingSpaces;
+        this.approvalStatus = approvalStatus != null ? approvalStatus : Status.PENDING;
+        this.propertyType = propertyType;
     }
 
     // Getters and Setters
@@ -94,52 +75,52 @@ public class Collection {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
+    public String getPropertyDescription() {
+        return propertyDescription;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setPropertyDescription(String propertyDescription) {
+        this.propertyDescription = propertyDescription;
     }
 
-    public List<Image> getImages() {
-        return images;
+    public String getPropertyAddress() {
+        return propertyAddress;
     }
 
-    public void setImages(List<Image> images) {
-        this.images = images;
+    public void setPropertyAddress(String propertyAddress) {
+        this.propertyAddress = propertyAddress;
     }
 
-    public String getAddress() {
-        return address;
+    public List<String> getImageUrls() {
+        return imageUrls;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setImageUrls(List imageUrls) {
+        this.imageUrls = imageUrls;
     }
 
-    public Double getPrice() {
-        return price;
+    public String getCollectionId() {
+        return collectionId;
     }
 
-    public void setPrice(Double price) {
-        this.price = price;
+    public void setCollectionId(String collectionId) {
+        this.collectionId = collectionId;
     }
 
-    public String getDescription() {
-        return description;
+    public Integer getPropertySize() {
+        return propertySize;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setPropertySize(Integer propertySize) {
+        this.propertySize = propertySize;
     }
 
-    public Integer getInternalSize() {
-        return internalSize;
+    public Long getPropertyOwnerId() {
+        return propertyOwnerId;
     }
 
-    public void setInternalSize(Integer internalSize) {
-        this.internalSize = internalSize;
+    public void setPropertyOwnerId(Long propertyOwnerId) {
+        this.propertyOwnerId = propertyOwnerId;
     }
 
     public Integer getBedrooms() {
@@ -158,75 +139,27 @@ public class Collection {
         this.bathrooms = bathrooms;
     }
 
-    public Boolean getAircon() {
-        return aircon;
+    public Integer getParkingSpaces() {
+        return parkingSpaces;
     }
 
-    public void setAircon(Boolean aircon) {
-        this.aircon = aircon;
+    public void setParkingSpaces(Integer parkingSpaces) {
+        this.parkingSpaces = parkingSpaces;
     }
 
-    public Boolean getHeating() {
-        return heating;
+    public Status getApprovalStatus() {
+        return approvalStatus;
     }
 
-    public void setHeating(Boolean heating) {
-        this.heating = heating;
+    public void setApprovalStatus(Status approvalStatus) {
+        this.approvalStatus = approvalStatus;
     }
 
-    public Integer getParking() {
-        return parking;
+    public String getPropertyType() {
+        return propertyType;
     }
 
-    public void setParking(Integer parking) {
-        this.parking = parking;
-    }
-
-    public Double getExternalSize() {
-        return externalSize;
-    }
-
-    public void setExternalSize(Double externalSize) {
-        this.externalSize = externalSize;
-    }
-
-    public Integer getLevels() {
-        return levels;
-    }
-
-    public void setLevels(Integer levels) {
-        this.levels = levels;
-    }
-
-    public Boolean getPool() {
-        return pool;
-    }
-
-    public void setPool(Boolean pool) {
-        this.pool = pool;
-    }
-
-    public List<String> getExtraFeatures() {
-        return extraFeatures;
-    }
-
-    public void setExtraFeatures(List<String> extraFeatures) {
-        this.extraFeatures = extraFeatures;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public Double getApprovedPercentage() {
-        return approvedPercentage;
-    }
-
-    public void setApprovedPercentage(Double approvedPercentage) {
-        this.approvedPercentage = approvedPercentage;
+    public void setPropertyType(String propertyType) {
+        this.propertyType = propertyType;
     }
 }
