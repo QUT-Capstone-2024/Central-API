@@ -18,6 +18,7 @@ import com.cl.centralapi.model.User;
 import com.cl.centralapi.service.UserService;
 
 import java.util.Collections;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
@@ -120,4 +121,22 @@ public class UserController {
         userService.deleteUserById(id);
         return ResponseEntity.status(200).body("User deleted successfully");
     }
+
+    @Operation(summary = "Get all users", description = "This endpoint allows you to retrieve all users in the system.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Users retrieved successfully",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = User.class)) }),
+            @ApiResponse(responseCode = "403", description = "Access denied",
+                    content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = @Content) })
+    @GetMapping
+    @PreAuthorize("hasAuthority('ROLE_INTERNAL') and principal.userType == T(com.cl.centralapi.enums.UserType).CL_ADMIN")
+    public ResponseEntity<List<User>> getAllUsers() {
+        List<User> users = userService.findAllUsers();
+        return ResponseEntity.ok(users);
+    }
+
+
 }
