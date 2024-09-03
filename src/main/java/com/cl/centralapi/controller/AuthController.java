@@ -3,6 +3,7 @@ package com.cl.centralapi.controller;
 import com.cl.centralapi.model.AuthenticationResponse;
 import com.cl.centralapi.model.User;
 import com.cl.centralapi.service.CustomUserDetailsService;
+import com.cl.centralapi.service.UserService;
 import com.cl.centralapi.security.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -36,6 +37,9 @@ public class AuthController {
     private CustomUserDetailsService userDetailsService;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private JwtUtil jwtUtil;
 
     @Operation(summary = "Login a registered user", description = "This endpoint allows registered users to login to the system.")
@@ -64,7 +68,14 @@ public class AuthController {
         final UserDetails userDetails = userDetailsService.loadUserByUsername(authRequest.getEmail());
         final String jwt = jwtUtil.generateToken(userDetails.getUsername());
 
+        // Fetch additional user details using UserService
+        User user = userService.findByEmail(authRequest.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        // Create a response object with the token, user details, and user type
+        AuthenticationResponse response = new AuthenticationResponse(jwt, user.getEmail(), user.getName(), user.getUserRole(), user.getUserType());
+
         logger.info("Generated JWT token for user: {}", authRequest.getEmail());
-        return ResponseEntity.ok(new AuthenticationResponse(jwt));
+        return ResponseEntity.ok(response);
     }
 }
