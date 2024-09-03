@@ -14,7 +14,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
-
+import java.util.Map;
+import java.util.HashMap;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.HttpEntity;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.http.HttpMethod;
+import org.springframework.core.ParameterizedTypeReference;
 import java.io.IOException;
 import java.net.URI;
 import java.time.ZonedDateTime;
@@ -38,40 +48,55 @@ public class ImageService {
 
     private final String BUCKET_NAME = "visioncore-image-bucket";
 
-    public URI uploadImage(Long userId, String address, MultipartFile file, ImageTags tag, String customTag, String description) throws IOException {
-        // Fetch the User object
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-
-        // Fetch or create the Collection object
-        Collection collection = collectionRepository.findByUserAndPropertyAddress(user, address)
+    public Map<String, Object> uploadImageAndClassify(Long userId, String address, MultipartFile file, ImageTags tag, String customTag, String description) throws IOException {
+        // Get the user and collection
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        Collection collection = collectionRepository.findByUserAndAddress(user, address)
                 .orElseGet(() -> createNewCollection(user, address));
 
-        // Upload the file to S3 and construct the image URL
-        String key = collection.getId() + "/" + file.getOriginalFilename();
+        // Safeguard against null values for the collection ID
+        Long collectionId = collection.getId();
+        String key = (collectionId != null ? collectionId.toString() : "unknown") + "/" + file.getOriginalFilename();
+
+        // Upload the image to S3
         s3Client.putObject(PutObjectRequest.builder()
                         .bucket(BUCKET_NAME)
                         .key(key)
                         .build(),
                 software.amazon.awssdk.core.sync.RequestBody.fromBytes(file.getBytes()));
-        String imageUrl = "https://" + BUCKET_NAME + ".s3.amazonaws.com/" + key;
 
-        // Create and save the Image object
-        Image image = new Image(
-                imageUrl, // imageUrl
-                ZonedDateTime.now(), // uploadTime
-                tag, // imageTag
-                generateImageId(), // imageId
-                Status.PENDING, // imageStatus
-                customTag, // rejectionReason (if you want to use customTag as rejectionReason)
-                collection // collection
-        );
-        imageRepository.save(image);
+        String imageUrl = "https://" + BUCKET_NAME + ".s3.ap-southeast-2.amazonaws.com/" + key;
 
-        // Update the collection status based on the new image
-        autoUpdateCollectionStatus(collection.getId());
+        // Call the Flask API to classify the image and get a JSON response as a Map
+        ResponseEntity<Map<String, Object>> response = sendImageToFlask(imageUrl);
 
-        return URI.create(image.getImageUrl());
+        // Combine the URL and the classification result into a single map
+        Map<String, Object> result = new HashMap<>();
+        result.put("image_url", imageUrl);
+        result.put("classification_result", response.getBody());  // Store the JSON object directly
+
+        return result;
+    }
+
+    private ResponseEntity<Map<String, Object>> sendImageToFlask(String imageUrl) {
+        String flaskApiUrl = "http://localhost:5000/api/image/classify";
+
+        // Prepare the JSON payload with the image URL
+        Map<String, String> payload = new HashMap<>();
+        payload.put("url", imageUrl);
+
+        // Set up the headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        // Create the HTTP entity containing the headers and the payload
+        HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(payload, headers);
+
+        // Create a RestTemplate instance to send the request
+        RestTemplate restTemplate = new RestTemplate();
+
+        // Send the POST request to the Flask API and expect a Map in response
+        return restTemplate.exchange(flaskApiUrl, HttpMethod.POST, requestEntity, new ParameterizedTypeReference<Map<String, Object>>() {});
     }
 
     private Collection createNewCollection(User user, String propertyAddress) {
@@ -153,6 +178,8 @@ public class ImageService {
         autoUpdateCollectionStatus(collection.getId());
     }
 
+
+
     public void updateImage(Long imageId, Image updatedImage) {
         Image existingImage = imageRepository.findById(imageId)
                 .orElseThrow(() -> new IllegalArgumentException("Image not found"));
@@ -188,7 +215,6 @@ public class ImageService {
     }
 
     private void autoUpdateCollectionStatus(Long collectionId) {
-        // Find the collection by ID
         Collection collection = collectionRepository.findById(collectionId)
                 .orElseThrow(() -> new IllegalArgumentException("Collection not found"));
 
