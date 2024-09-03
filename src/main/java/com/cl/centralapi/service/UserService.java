@@ -35,24 +35,38 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         // Check if the email is being changed to one that already exists
-        if (!existingUser.getEmail().equals(user.getEmail())) {
+        if (user.getEmail() != null && !existingUser.getEmail().equals(user.getEmail())) {
             Optional<User> userWithEmail = userRepository.findByEmail(user.getEmail());
             if (userWithEmail.isPresent()) {
                 throw new RuntimeException("Email already in use");
             }
+            existingUser.setEmail(user.getEmail());
         }
 
-        existingUser.setName(user.getName());
-        existingUser.setEmail(user.getEmail());
-        if (!user.getPassword().equals(existingUser.getPassword())) {
+        if (user.getName() != null) {
+            existingUser.setName(user.getName());
+        }
+
+        if (user.getPassword() != null && !user.getPassword().isEmpty() &&
+                !passwordEncoder.matches(user.getPassword(), existingUser.getPassword())) {
             existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
         }
-        existingUser.setPhoneNumber(user.getPhoneNumber());
-        existingUser.setUserType(user.getUserType());
-        existingUser.setUserRole(user.getUserRole());
+
+        if (user.getPhoneNumber() != null) {
+            existingUser.setPhoneNumber(user.getPhoneNumber());
+        }
+
+        if (user.getUserType() != null) {
+            existingUser.setUserType(user.getUserType());
+        }
+
+        if (user.getUserRole() != null) {
+            existingUser.setUserRole(user.getUserRole());
+        }
 
         return userRepository.save(existingUser);
     }
+
 
 
     public Optional<User> findById(Long id) {
