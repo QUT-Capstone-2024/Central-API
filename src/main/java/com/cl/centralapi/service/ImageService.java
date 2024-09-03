@@ -51,7 +51,7 @@ public class ImageService {
     public Map<String, Object> uploadImageAndClassify(Long userId, String address, MultipartFile file, ImageTags tag, String customTag, String description) throws IOException {
         // Get the user and collection
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
-        Collection collection = collectionRepository.findByUserAndAddress(user, address)
+        Collection collection = collectionRepository.findByUserAndPropertyAddress(user, address)
                 .orElseGet(() -> createNewCollection(user, address));
 
         // Safeguard against null values for the collection ID
