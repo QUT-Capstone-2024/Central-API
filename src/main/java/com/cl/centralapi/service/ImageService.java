@@ -39,66 +39,69 @@ public class ImageService {
     private final String BUCKET_NAME = "visioncore-image-bucket";
 
     public URI uploadImage(Long userId, String address, MultipartFile file, ImageTags tag, String customTag, String description) throws IOException {
-        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
-        Collection collection = collectionRepository.findByUserAndAddress(user, address)
+        // Fetch the User object
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        // Fetch or create the Collection object
+        Collection collection = collectionRepository.findByUserAndPropertyAddress(user, address)
                 .orElseGet(() -> createNewCollection(user, address));
 
+        // Upload the file to S3 and construct the image URL
         String key = collection.getId() + "/" + file.getOriginalFilename();
         s3Client.putObject(PutObjectRequest.builder()
                         .bucket(BUCKET_NAME)
                         .key(key)
                         .build(),
                 software.amazon.awssdk.core.sync.RequestBody.fromBytes(file.getBytes()));
+        String imageUrl = "https://" + BUCKET_NAME + ".s3.amazonaws.com/" + key;
 
-        // Ensure a tag is provided (either from the enum or a custom tag)
-        if (tag == null && (customTag == null || customTag.isEmpty())) {
-            throw new IllegalArgumentException("An image must have either a tag or a custom tag.");
-    }
-
-    // Default status is PENDING
-    Status status = Status.PENDING;
-
-        // Create the Image instance with the new constructor
+        // Create and save the Image object
         Image image = new Image(
-                "https://" + BUCKET_NAME + ".s3.amazonaws.com/" + key, // imageUrl
+                imageUrl, // imageUrl
                 ZonedDateTime.now(), // uploadTime
                 tag, // imageTag
                 generateImageId(), // imageId
-                status, // imageStatus
-                customTag, // rejectionReason (if you want to use customTag as rejectionReason, otherwise set it to null)
+                Status.PENDING, // imageStatus
+                customTag, // rejectionReason (if you want to use customTag as rejectionReason)
                 collection // collection
         );
-
-        // Save the image to the repository
-
         imageRepository.save(image);
 
-    // Recalculate collection status
+        // Update the collection status based on the new image
         autoUpdateCollectionStatus(collection.getId());
 
         return URI.create(image.getImageUrl());
     }
 
     private Collection createNewCollection(User user, String propertyAddress) {
+        // Validate propertyAddress
+        if (propertyAddress == null || propertyAddress.trim().isEmpty()) {
+            throw new IllegalArgumentException("Property address must not be null or empty");
+        }
+
         Collection collection = new Collection(
                 null, // id (will be auto-generated)
-                "default description", // propertyDescription
+                "Default Description", // propertyDescription
                 propertyAddress, // propertyAddress
                 new ArrayList<>(), // imageUrls (default empty list)
                 "default-collection-id", // collectionId (default or generated)
                 0, // propertySize (default)
-                user.getId(), // propertyOwnerId (assuming the user's ID is used here)
+                user.getId(), // propertyOwnerId
                 0, // bedrooms (default)
                 0, // bathrooms (default)
                 0, // parkingSpaces (default)
                 Status.PENDING, // approvalStatus (default)
-                "unknown" // propertyType (default, change as needed)
+                "unknown" // propertyType (default)
         );
+        collection.setUser(user); // Ensure user is associated with the collection
         return collectionRepository.save(collection);
     }
 
+
     public List<Collection> getCollectionsByUserId(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
         return collectionRepository.findByUser(user);
     }
 
@@ -116,7 +119,7 @@ public class ImageService {
         return imageRepository.findByCollectionId(collectionId);
     }
 
-    public boolean isCollectionOwnedByUser(String userId, Long collectionId) {
+    public boolean isCollectionOwnedByUser(Long userId, Long collectionId) {
         Collection collection = collectionRepository.findById(collectionId)
                 .orElseThrow(() -> new IllegalArgumentException("Collection not found"));
 
@@ -125,8 +128,9 @@ public class ImageService {
     }
 
     public boolean isUserAdmin(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
-        return user != null && user.getUserType().equals(UserType.CL_ADMIN);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        return user.getUserType().equals(UserType.CL_ADMIN);
     }
 
     public void deleteCollectionById(Long collectionId) {

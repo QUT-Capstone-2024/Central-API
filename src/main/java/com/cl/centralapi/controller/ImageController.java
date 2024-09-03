@@ -46,6 +46,11 @@ public class ImageController {
             @RequestParam("tag") ImageTags tag,
             @RequestParam(value = "customTag", required = false) String customTag,
             @RequestParam(value = "description", required = false) String description) {
+        // Validate address
+        if (address == null || address.trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("Property address must not be null or empty");
+        }
+
         try {
             URI location = imageService.uploadImage(userId, address, file, tag, customTag, description);
             return ResponseEntity.created(location).body("Image uploaded successfully: " + location.toString());
@@ -53,6 +58,7 @@ public class ImageController {
             return ResponseEntity.status(500).body("Error uploading image: " + e.getMessage());
         }
     }
+
 
     @Operation(summary = "Get image collections by user ID", description = "This endpoint allows you to retrieve all image collections owned by the authenticated user.")
     @ApiResponses(value = {
@@ -64,7 +70,7 @@ public class ImageController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content) })
     @GetMapping("/collections")
-    @PreAuthorize("@imageService.isUserAdmin(principal.userType) or @imageService.isCollectionOwnedByUser(#collectionId, T(com.cl.centralapi.security.CustomUserDetails).id)")
+    @PreAuthorize("@imageService.isUserAdmin(principal.userId) or @imageService.isCollectionOwnedByUser(principal.userId, #collectionId)")
     public ResponseEntity<?> getCollectionsByUserId(@RequestParam("userId") Long userId) {
         List<Collection> collections = imageService.getCollectionsByUserId(userId);
         return ResponseEntity.ok(collections);
@@ -80,7 +86,7 @@ public class ImageController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content)})
     @GetMapping("/collections/{collectionId}/images")
-    @PreAuthorize("@imageService.isUserAdmin(principal.userType) or @imageService.isCollectionOwnedByUser(#collectionId, T(com.cl.centralapi.security.CustomUserDetails).id)")
+    @PreAuthorize("@imageService.isUserAdmin(principal.userId) or @imageService.isCollectionOwnedByUser(principal.userId, #collectionId)")
     public ResponseEntity<?> getImagesByCollectionId(@PathVariable Long collectionId) {
         try {
             List<Image> images = imageService.getImagesByCollectionId(collectionId);
@@ -98,7 +104,7 @@ public class ImageController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @DeleteMapping("/collections/{collectionId}")
-    @PreAuthorize("@imageService.isUserAdmin(principal.userType) or @imageService.isCollectionOwnedByUser(#collectionId, T(com.cl.centralapi.security.CustomUserDetails).id)")
+    @PreAuthorize("@imageService.isUserAdmin(principal.userId) or @imageService.isCollectionOwnedByUser(principal.userId, #collectionId)")
     public ResponseEntity<?> deleteCollectionById(@PathVariable Long collectionId) {
         try {
             imageService.deleteCollectionById(collectionId);
@@ -116,7 +122,7 @@ public class ImageController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @DeleteMapping("/collections/{collectionId}/images/{imageId}")
-    @PreAuthorize("@imageService.isUserAdmin(principal.userType) or @imageService.isCollectionOwnedByUser(#collectionId, T(com.cl.centralapi.security.CustomUserDetails).id)")
+    @PreAuthorize("@imageService.isUserAdmin(principal.userId) or @imageService.isCollectionOwnedByUser(principal.userId, #collectionId)")
     public ResponseEntity<?> deleteImageById(@PathVariable Long collectionId, @PathVariable Long imageId) {
         try {
             imageService.deleteImage(collectionId, imageId);
@@ -136,7 +142,7 @@ public class ImageController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content) })
     @PutMapping("/collections/{collectionId}/images/{imageId}")
-    @PreAuthorize("@imageService.isUserAdmin(principal.userType) or @imageService.isCollectionOwnedByUser(#collectionId, T(com.cl.centralapi.security.CustomUserDetails).id)")
+    @PreAuthorize("@imageService.isUserAdmin(principal.userId) or @imageService.isCollectionOwnedByUser(principal.userId, #collectionId)")
     public ResponseEntity<?> updateImage(@PathVariable Long collectionId, @PathVariable Long imageId, @RequestBody Image updatedImage) {
         try {
             imageService.updateImage(imageId, updatedImage);
@@ -158,7 +164,7 @@ public class ImageController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content) })
     @PutMapping("/collections/{collectionId}/status")
-    @PreAuthorize("principal.userType == T(com.cl.centralapi.enums.UserType).CL_ADMIN or @imageService.isCollectionOwnedByUser(#collectionId, principal.id)")
+    @PreAuthorize("principal.userType == T(com.cl.centralapi.enums.UserType).CL_ADMIN or @imageService.isCollectionOwnedByUser(principal.userId, #collectionId)")
     public ResponseEntity<?> updateCollectionStatus(@PathVariable Long collectionId, @RequestParam Status status) {
         try {
             imageService.updateCollectionStatus(collectionId, status);

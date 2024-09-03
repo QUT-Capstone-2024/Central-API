@@ -46,6 +46,11 @@ public class Collection {
     @Column(nullable = false)
     private String propertyType;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    @JsonBackReference
+    private User user;
+
     // Constructors
     public Collection() {}
 
@@ -161,5 +166,13 @@ public class Collection {
 
     public void setPropertyType(String propertyType) {
         this.propertyType = propertyType;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
