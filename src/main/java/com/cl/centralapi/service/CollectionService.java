@@ -1,11 +1,11 @@
 package com.cl.centralapi.service;
 
-import com.cl.centralapi.enums.Status;
 import com.cl.centralapi.model.Collection;
 import com.cl.centralapi.repository.CollectionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -14,13 +14,12 @@ public class CollectionService {
     @Autowired
     private CollectionRepository collectionRepository;
 
-    // Method to save a new Collection
+    // Save a new collection
     public Collection saveCollection(Collection collection) {
-        // Additional checks or modifications can be added here if needed
         return collectionRepository.save(collection);
     }
 
-    // Method to update an existing Collection
+    // Update an existing collection
     public Collection updateCollection(Long id, Collection updatedCollection) {
         Collection existingCollection = collectionRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Collection not found"));
@@ -40,13 +39,23 @@ public class CollectionService {
         return collectionRepository.save(existingCollection);
     }
 
-    // Method to find a Collection by ID
+    // Find a collection by ID
     public Optional<Collection> findById(Long id) {
         return collectionRepository.findById(id);
     }
 
-    // Method to delete a Collection by ID
+    // Delete a collection by ID
     public void deleteCollectionById(Long id) {
         collectionRepository.deleteById(id);
+    }
+
+    // Find collections by user ID
+    public List<Collection> findCollectionsByUserId(Long userId) {
+        return collectionRepository.findByUserId(userId);
+    }
+
+    // Find all collections (Admin only)
+    public List<Collection> findAllCollections() {
+        return collectionRepository.findAll();
     }
 }

@@ -44,7 +44,7 @@ public class ImageService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         // Fetch or create the Collection object
-        Collection collection = collectionRepository.findByUserAndPropertyAddress(user, address)
+        Collection collection = collectionRepository.findByUserIdAndPropertyAddress(userId, address)
                 .orElseGet(() -> createNewCollection(user, address));
 
         // Upload the file to S3 and construct the image URL
@@ -100,10 +100,10 @@ public class ImageService {
 
 
     public List<Collection> getCollectionsByUserId(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        return collectionRepository.findByUser(user);
+        // No need to fetch the user entity, just pass the userId directly
+        return collectionRepository.findByUserId(userId);
     }
+
 
     public Collection getCollectionById(Long collectionId) {
         return collectionRepository.findById(collectionId)

@@ -1,15 +1,15 @@
 package com.cl.centralapi.repository;
 
 import com.cl.centralapi.model.Collection;
-import com.cl.centralapi.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface CollectionRepository extends JpaRepository<Collection, Long> {
-    Optional<Collection> findByUserAndPropertyAddress(User user, String propertyAddress);
 
+    // Find collections by userId (instead of passing the entire User object)
+    List<Collection> findByUserId(Long userId);
 
-    List<Collection> findByUser(User user);
+    Optional<Collection> findByUserIdAndPropertyAddress(Long userId, String propertyAddress);
 }
