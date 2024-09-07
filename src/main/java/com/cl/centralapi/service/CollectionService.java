@@ -1,11 +1,11 @@
 package com.cl.centralapi.service;
 
-import com.cl.centralapi.enums.Status;
 import com.cl.centralapi.model.Collection;
 import com.cl.centralapi.repository.CollectionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -14,39 +14,74 @@ public class CollectionService {
     @Autowired
     private CollectionRepository collectionRepository;
 
-    // Method to save a new Collection
+    // Save a new collection
     public Collection saveCollection(Collection collection) {
-        // Additional checks or modifications can be added here if needed
         return collectionRepository.save(collection);
     }
 
-    // Method to update an existing Collection
+    // Update an existing collection
     public Collection updateCollection(Long id, Collection updatedCollection) {
         Collection existingCollection = collectionRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Collection not found"));
 
-        existingCollection.setPropertyDescription(updatedCollection.getPropertyDescription());
-        existingCollection.setPropertyAddress(updatedCollection.getPropertyAddress());
-        existingCollection.setImageUrls(updatedCollection.getImageUrls());
-        existingCollection.setCollectionId(updatedCollection.getCollectionId());
-        existingCollection.setPropertySize(updatedCollection.getPropertySize());
-        existingCollection.setPropertyOwnerId(updatedCollection.getPropertyOwnerId());
-        existingCollection.setBedrooms(updatedCollection.getBedrooms());
-        existingCollection.setBathrooms(updatedCollection.getBathrooms());
-        existingCollection.setParkingSpaces(updatedCollection.getParkingSpaces());
-        existingCollection.setApprovalStatus(updatedCollection.getApprovalStatus());
-        existingCollection.setPropertyType(updatedCollection.getPropertyType());
+        // Only update fields if they are provided (not null)
+        if (updatedCollection.getPropertyDescription() != null) {
+            existingCollection.setPropertyDescription(updatedCollection.getPropertyDescription());
+        }
+        if (updatedCollection.getPropertyAddress() != null) {
+            existingCollection.setPropertyAddress(updatedCollection.getPropertyAddress());
+        }
+        if (updatedCollection.getCollectionId() != null) {
+            existingCollection.setCollectionId(updatedCollection.getCollectionId());
+        }
+        if (updatedCollection.getPropertySize() != null) {
+            existingCollection.setPropertySize(updatedCollection.getPropertySize());
+        }
+        if (updatedCollection.getPropertyOwnerId() != null) {
+            existingCollection.setPropertyOwnerId(updatedCollection.getPropertyOwnerId());
+        }
+        if (updatedCollection.getBedrooms() != null) {
+            existingCollection.setBedrooms(updatedCollection.getBedrooms());
+        }
+        if (updatedCollection.getBathrooms() != null) {
+            existingCollection.setBathrooms(updatedCollection.getBathrooms());
+        }
+        if (updatedCollection.getParkingSpaces() != null) {
+            existingCollection.setParkingSpaces(updatedCollection.getParkingSpaces());
+        }
+        if (updatedCollection.getApprovalStatus() != null) {
+            existingCollection.setApprovalStatus(updatedCollection.getApprovalStatus());
+        }
+        if (updatedCollection.getPropertyType() != null) {
+            existingCollection.setPropertyType(updatedCollection.getPropertyType());
+        }
+
+        // Handle image updates if necessary
+        if (updatedCollection.getImages() != null) {
+            existingCollection.setImages(updatedCollection.getImages());
+        }
 
         return collectionRepository.save(existingCollection);
     }
 
-    // Method to find a Collection by ID
+
+    // Find a collection by ID
     public Optional<Collection> findById(Long id) {
         return collectionRepository.findById(id);
     }
 
-    // Method to delete a Collection by ID
+    // Delete a collection by ID
     public void deleteCollectionById(Long id) {
         collectionRepository.deleteById(id);
+    }
+
+    // Find collections by user ID
+    public List<Collection> findCollectionsByUserId(Long userId) {
+        return collectionRepository.findByUserId(userId);
+    }
+
+    // Find all collections (Admin only)
+    public List<Collection> findAllCollections() {
+        return collectionRepository.findAll();
     }
 }

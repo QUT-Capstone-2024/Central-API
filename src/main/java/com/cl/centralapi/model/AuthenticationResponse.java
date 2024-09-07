@@ -9,13 +9,15 @@ public class AuthenticationResponse {
     private String name;
     private String role;
     private String userType;
+    private Long id;
 
-    public AuthenticationResponse(String token, String email, String name, UserRole role, UserType userType) {
+    public AuthenticationResponse(String token, String email, String name, UserRole role, UserType userType, Long id) {
         this.token = token;
         this.email = email;
         this.name = name;
         this.role = String.valueOf(role);
         this.userType = String.valueOf(userType);
+        this.id = id;
     }
 
     // Getters and Setters
@@ -58,5 +60,9 @@ public class AuthenticationResponse {
 
     public void setUserType(String userType) {
         this.userType = userType;
+    }
+
+    public Long getId() {
+        return id;
     }
 }

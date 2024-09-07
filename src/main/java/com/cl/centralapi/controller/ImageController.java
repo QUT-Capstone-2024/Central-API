@@ -48,22 +48,13 @@ public class ImageController {
             @RequestParam("tag") ImageTags tag,
             @RequestParam(value = "customTag", required = false) String customTag,
             @RequestParam(value = "description", required = false) String description) {
-        // Validate address
-        if (address == null || address.trim().isEmpty()) {
-            return ResponseEntity.badRequest().body("Property address must not be null or empty");
-        }
-
         try {
-            // Upload the image to S3 and get the URL and classification result
-            Map<String, Object> result = imageService.uploadImageAndClassify(userId, address, file, tag, customTag, description);
-
-            // Return the map directly as the response body
-            return ResponseEntity.ok(result);
+            URI location = imageService.uploadImage(userId, address, file, tag, customTag, description);
+            return ResponseEntity.created(location).body("Image uploaded successfully: " + location.toString());
         } catch (IOException e) {
             return ResponseEntity.status(500).body("Error uploading and classifying image: " + e.getMessage());
         }
     }
-
 
     @Operation(summary = "Get image collections by user ID", description = "This endpoint allows you to retrieve all image collections owned by the authenticated user.")
     @ApiResponses(value = {
@@ -75,7 +66,7 @@ public class ImageController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content) })
     @GetMapping("/collections")
-    @PreAuthorize("@imageService.isUserAdmin(principal.userId) or @imageService.isCollectionOwnedByUser(principal.userId, #collectionId)")
+    @PreAuthorize("@imageService.isUserAdmin(principal.userId) or @imageService.isCollectionOwnedByUser(principal.userId, #userId)")
     public ResponseEntity<?> getCollectionsByUserId(@RequestParam("userId") Long userId) {
         List<Collection> collections = imageService.getCollectionsByUserId(userId);
         return ResponseEntity.ok(collections);

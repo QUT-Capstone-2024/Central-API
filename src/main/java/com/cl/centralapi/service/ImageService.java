@@ -48,10 +48,13 @@ public class ImageService {
 
     private final String BUCKET_NAME = "visioncore-image-bucket";
 
-    public Map<String, Object> uploadImageAndClassify(Long userId, String address, MultipartFile file, ImageTags tag, String customTag, String description) throws IOException {
-        // Get the user and collection
-        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
-        Collection collection = collectionRepository.findByUserAndPropertyAddress(user, address)
+    public URI uploadImage(Long userId, String address, MultipartFile file, ImageTags tag, String customTag, String description) throws IOException {
+        // Fetch the User object
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        // Fetch or create the Collection object
+        Collection collection = collectionRepository.findByUserIdAndPropertyAddress(userId, address)
                 .orElseGet(() -> createNewCollection(user, address));
 
         // Safeguard against null values for the collection ID
@@ -65,15 +68,12 @@ public class ImageService {
                         .build(),
                 software.amazon.awssdk.core.sync.RequestBody.fromBytes(file.getBytes()));
 
-        String imageUrl = "https://" + BUCKET_NAME + ".s3.ap-southeast-2.amazonaws.com/" + key;
+        // Add the new image to the collection’s images list
+        collection.getImages().add(image);
+        collectionRepository.save(collection); // Save the collection with the new image
 
-        // Call the Flask API to classify the image and get a JSON response as a Map
-        ResponseEntity<Map<String, Object>> response = sendImageToFlask(imageUrl);
-
-        // Combine the URL and the classification result into a single map
-        Map<String, Object> result = new HashMap<>();
-        result.put("image_url", imageUrl);
-        result.put("classification_result", response.getBody());  // Store the JSON object directly
+        // Update the collection status based on the new image
+        autoUpdateCollectionStatus(collection.getId());
 
         return result;
     }
@@ -109,7 +109,6 @@ public class ImageService {
                 null, // id (will be auto-generated)
                 "Default Description", // propertyDescription
                 propertyAddress, // propertyAddress
-                new ArrayList<>(), // imageUrls (default empty list)
                 "default-collection-id", // collectionId (default or generated)
                 0, // propertySize (default)
                 user.getId(), // propertyOwnerId
@@ -117,17 +116,16 @@ public class ImageService {
                 0, // bathrooms (default)
                 0, // parkingSpaces (default)
                 Status.PENDING, // approvalStatus (default)
-                "unknown" // propertyType (default)
+                "unknown", // propertyType (default)
+                new ArrayList<>() // image list (initially empty)
         );
         collection.setUser(user); // Ensure user is associated with the collection
         return collectionRepository.save(collection);
     }
 
-
     public List<Collection> getCollectionsByUserId(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        return collectionRepository.findByUser(user);
+        // No need to fetch the user entity, just pass the userId directly
+        return collectionRepository.findByUserId(userId);
     }
 
     public Collection getCollectionById(Long collectionId) {
@@ -141,7 +139,7 @@ public class ImageService {
                 .orElseThrow(() -> new IllegalArgumentException("Collection not found"));
 
         // Fetch and return all images for this collection
-        return imageRepository.findByCollectionId(collectionId);
+        return collection.getImages(); // Return the images directly from the collection
     }
 
     public boolean isCollectionOwnedByUser(Long userId, Long collectionId) {
@@ -173,6 +171,10 @@ public class ImageService {
             throw new IllegalArgumentException("Image is not owned by collection");
         }
         imageRepository.delete(image);
+
+        // Remove the image from the collection's images list
+        collection.getImages().remove(image);
+        collectionRepository.save(collection); // Save the updated collection
 
         // Recalculate collection status
         autoUpdateCollectionStatus(collection.getId());
@@ -219,7 +221,7 @@ public class ImageService {
                 .orElseThrow(() -> new IllegalArgumentException("Collection not found"));
 
         // Find all images associated with the collection
-        List<Image> images = imageRepository.findByCollectionId(collectionId);
+        List<Image> images = collection.getImages(); // Get the images directly from the collection
 
         // Counters
         double imageCount = images.size();
