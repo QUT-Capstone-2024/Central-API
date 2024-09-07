@@ -24,20 +24,46 @@ public class CollectionService {
         Collection existingCollection = collectionRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Collection not found"));
 
-        existingCollection.setPropertyDescription(updatedCollection.getPropertyDescription());
-        existingCollection.setPropertyAddress(updatedCollection.getPropertyAddress());
-        existingCollection.setImageUrls(updatedCollection.getImageUrls());
-        existingCollection.setCollectionId(updatedCollection.getCollectionId());
-        existingCollection.setPropertySize(updatedCollection.getPropertySize());
-        existingCollection.setPropertyOwnerId(updatedCollection.getPropertyOwnerId());
-        existingCollection.setBedrooms(updatedCollection.getBedrooms());
-        existingCollection.setBathrooms(updatedCollection.getBathrooms());
-        existingCollection.setParkingSpaces(updatedCollection.getParkingSpaces());
-        existingCollection.setApprovalStatus(updatedCollection.getApprovalStatus());
-        existingCollection.setPropertyType(updatedCollection.getPropertyType());
+        // Only update fields if they are provided (not null)
+        if (updatedCollection.getPropertyDescription() != null) {
+            existingCollection.setPropertyDescription(updatedCollection.getPropertyDescription());
+        }
+        if (updatedCollection.getPropertyAddress() != null) {
+            existingCollection.setPropertyAddress(updatedCollection.getPropertyAddress());
+        }
+        if (updatedCollection.getCollectionId() != null) {
+            existingCollection.setCollectionId(updatedCollection.getCollectionId());
+        }
+        if (updatedCollection.getPropertySize() != null) {
+            existingCollection.setPropertySize(updatedCollection.getPropertySize());
+        }
+        if (updatedCollection.getPropertyOwnerId() != null) {
+            existingCollection.setPropertyOwnerId(updatedCollection.getPropertyOwnerId());
+        }
+        if (updatedCollection.getBedrooms() != null) {
+            existingCollection.setBedrooms(updatedCollection.getBedrooms());
+        }
+        if (updatedCollection.getBathrooms() != null) {
+            existingCollection.setBathrooms(updatedCollection.getBathrooms());
+        }
+        if (updatedCollection.getParkingSpaces() != null) {
+            existingCollection.setParkingSpaces(updatedCollection.getParkingSpaces());
+        }
+        if (updatedCollection.getApprovalStatus() != null) {
+            existingCollection.setApprovalStatus(updatedCollection.getApprovalStatus());
+        }
+        if (updatedCollection.getPropertyType() != null) {
+            existingCollection.setPropertyType(updatedCollection.getPropertyType());
+        }
+
+        // Handle image updates if necessary
+        if (updatedCollection.getImages() != null) {
+            existingCollection.setImages(updatedCollection.getImages());
+        }
 
         return collectionRepository.save(existingCollection);
     }
+
 
     // Find a collection by ID
     public Optional<Collection> findById(Long id) {

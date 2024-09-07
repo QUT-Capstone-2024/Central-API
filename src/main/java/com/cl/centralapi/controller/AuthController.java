@@ -73,7 +73,7 @@ public class AuthController {
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         // Create a response object with the token, user details, and user type
-        AuthenticationResponse response = new AuthenticationResponse(jwt, user.getEmail(), user.getName(), user.getUserRole(), user.getUserType());
+        AuthenticationResponse response = new AuthenticationResponse(jwt, user.getEmail(), user.getName(), user.getUserRole(), user.getUserType(), user.getId());
 
         logger.info("Generated JWT token for user: {}", authRequest.getEmail());
         return ResponseEntity.ok(response);

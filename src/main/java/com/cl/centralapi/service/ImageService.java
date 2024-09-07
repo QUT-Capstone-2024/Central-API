@@ -68,6 +68,10 @@ public class ImageService {
         );
         imageRepository.save(image);
 
+        // Add the new image to the collection’s images list
+        collection.getImages().add(image);
+        collectionRepository.save(collection); // Save the collection with the new image
+
         // Update the collection status based on the new image
         autoUpdateCollectionStatus(collection.getId());
 
@@ -84,7 +88,6 @@ public class ImageService {
                 null, // id (will be auto-generated)
                 "Default Description", // propertyDescription
                 propertyAddress, // propertyAddress
-                new ArrayList<>(), // imageUrls (default empty list)
                 "default-collection-id", // collectionId (default or generated)
                 0, // propertySize (default)
                 user.getId(), // propertyOwnerId
@@ -92,18 +95,17 @@ public class ImageService {
                 0, // bathrooms (default)
                 0, // parkingSpaces (default)
                 Status.PENDING, // approvalStatus (default)
-                "unknown" // propertyType (default)
+                "unknown", // propertyType (default)
+                new ArrayList<>() // image list (initially empty)
         );
         collection.setUser(user); // Ensure user is associated with the collection
         return collectionRepository.save(collection);
     }
 
-
     public List<Collection> getCollectionsByUserId(Long userId) {
         // No need to fetch the user entity, just pass the userId directly
         return collectionRepository.findByUserId(userId);
     }
-
 
     public Collection getCollectionById(Long collectionId) {
         return collectionRepository.findById(collectionId)
@@ -116,7 +118,7 @@ public class ImageService {
                 .orElseThrow(() -> new IllegalArgumentException("Collection not found"));
 
         // Fetch and return all images for this collection
-        return imageRepository.findByCollectionId(collectionId);
+        return collection.getImages(); // Return the images directly from the collection
     }
 
     public boolean isCollectionOwnedByUser(Long userId, Long collectionId) {
@@ -148,6 +150,10 @@ public class ImageService {
             throw new IllegalArgumentException("Image is not owned by collection");
         }
         imageRepository.delete(image);
+
+        // Remove the image from the collection's images list
+        collection.getImages().remove(image);
+        collectionRepository.save(collection); // Save the updated collection
 
         // Recalculate collection status
         autoUpdateCollectionStatus(collection.getId());
@@ -193,7 +199,7 @@ public class ImageService {
                 .orElseThrow(() -> new IllegalArgumentException("Collection not found"));
 
         // Find all images associated with the collection
-        List<Image> images = imageRepository.findByCollectionId(collectionId);
+        List<Image> images = collection.getImages(); // Get the images directly from the collection
 
         // Counters
         double imageCount = images.size();
