@@ -68,15 +68,34 @@ public class ImageService {
                         .build(),
                 software.amazon.awssdk.core.sync.RequestBody.fromBytes(file.getBytes()));
 
+        // Construct the S3 image URL
+        String imageUrl = "https://" + BUCKET_NAME + ".s3.amazonaws.com/" + key;
+
+        // Create the new Image object
+        Image image = new Image(
+                imageUrl,  // image URL
+                ZonedDateTime.now(),  // upload time
+                tag,  // image tag
+                generateImageId(),  // image ID
+                Status.PENDING,  // image status
+                customTag,  // rejection reason
+                collection  // associate with the collection
+        );
+
+        // Save the new image to the repository
+        imageRepository.save(image);
+
         // Add the new image to the collection’s images list
         collection.getImages().add(image);
-        collectionRepository.save(collection); // Save the collection with the new image
+        collectionRepository.save(collection);  // Save the collection with the new image
 
         // Update the collection status based on the new image
         autoUpdateCollectionStatus(collection.getId());
 
-        return result;
+        // Return the URI for the newly uploaded image
+        return URI.create(imageUrl);
     }
+
 
     private ResponseEntity<Map<String, Object>> sendImageToFlask(String imageUrl) {
         String flaskApiUrl = "http://localhost:5000/api/image/classify";
