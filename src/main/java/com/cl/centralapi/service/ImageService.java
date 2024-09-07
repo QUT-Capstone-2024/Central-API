@@ -48,17 +48,16 @@ public class ImageService {
 
     private final String BUCKET_NAME = "visioncore-image-bucket";
 
-    public URI uploadImage(Long userId, String address, MultipartFile file, ImageTags tag, String customTag, String description) throws IOException {
+    public URI uploadImage(Long userId, Long collectionId, MultipartFile file, ImageTags tag, String customTag, String description) throws IOException {
         // Fetch the User object
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        // Fetch or create the Collection object
-        Collection collection = collectionRepository.findByUserIdAndPropertyAddress(userId, address)
-                .orElseGet(() -> createNewCollection(user, address));
+        // Fetch the existing Collection object by collectionId
+        Collection collection = collectionRepository.findById(collectionId)
+                .orElseThrow(() -> new IllegalArgumentException("Collection not found"));
 
         // Safeguard against null values for the collection ID
-        Long collectionId = collection.getId();
         String key = (collectionId != null ? collectionId.toString() : "unknown") + "/" + file.getOriginalFilename();
 
         // Upload the image to S3
@@ -95,6 +94,7 @@ public class ImageService {
         // Return the URI for the newly uploaded image
         return URI.create(imageUrl);
     }
+
 
 
     private ResponseEntity<Map<String, Object>> sendImageToFlask(String imageUrl) {

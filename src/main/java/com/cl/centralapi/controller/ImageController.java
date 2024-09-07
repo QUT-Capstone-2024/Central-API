@@ -16,12 +16,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import java.util.Map;
-
 
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/images")
@@ -41,20 +40,21 @@ public class ImageController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content) })
     @PostMapping("/upload")
-    public ResponseEntity<?> uploadImage(
-            @RequestParam("userId") Long userId,
-            @RequestParam("address") String address,
-            @RequestParam("file") MultipartFile file,
-            @RequestParam("tag") ImageTags tag,
-            @RequestParam(value = "customTag", required = false) String customTag,
-            @RequestParam(value = "description", required = false) String description) {
+    public ResponseEntity<?> uploadImage(@RequestParam("userId") Long userId,
+                                         @RequestParam("collectionId") Long collectionId,
+                                         @RequestParam("file") MultipartFile file,
+                                         @RequestParam("tag") ImageTags tag,
+                                         @RequestParam(value = "customTag", required = false) String customTag,
+                                         @RequestParam(value = "description", required = false) String description) {
         try {
-            URI location = imageService.uploadImage(userId, address, file, tag, customTag, description);
-            return ResponseEntity.created(location).body("Image uploaded successfully: " + location.toString());
+            URI location = imageService.uploadImage(userId, Long.valueOf(String.valueOf(collectionId)), file, tag, customTag, description);
+            // Return the response in JSON format with a success message and the URL
+            return ResponseEntity.created(location).body(Map.of("message", "Image uploaded successfully", "url", location.toString()));
         } catch (IOException e) {
-            return ResponseEntity.status(500).body("Error uploading and classifying image: " + e.getMessage());
+            return ResponseEntity.status(500).body(Map.of("error", "Error uploading and classifying image", "message", e.getMessage()));
         }
     }
+
 
     @Operation(summary = "Get image collections by user ID", description = "This endpoint allows you to retrieve all image collections owned by the authenticated user.")
     @ApiResponses(value = {
