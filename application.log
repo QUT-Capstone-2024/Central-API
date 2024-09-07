@@ -1,47 +1,44 @@
-2024-09-07T12:29:24.984+10:00  INFO 10440 --- [main] c.cl.centralapi.CentralApiApplication    : Starting CentralApiApplication using Java 18.0.2 with PID 10440 (C:\Users\SLHan\OneDrive\Desktop\Capstone\Central API\CentralAPI\target\classes started by SLHan in C:\Users\SLHan\OneDrive\Desktop\Capstone\Central API\CentralAPI)
-2024-09-07T12:29:24.985+10:00 DEBUG 10440 --- [main] c.cl.centralapi.CentralApiApplication    : Running with Spring Boot v3.3.2, Spring v6.1.11
-2024-09-07T12:29:24.986+10:00  INFO 10440 --- [main] c.cl.centralapi.CentralApiApplication    : No active profile set, falling back to 1 default profile: "default"
-2024-09-07T12:29:25.940+10:00  INFO 10440 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2024-09-07T12:29:26.008+10:00  INFO 10440 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 61 ms. Found 3 JPA repository interfaces.
-2024-09-07T12:29:26.759+10:00  INFO 10440 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
-2024-09-07T12:29:26.774+10:00  INFO 10440 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2024-09-07T12:29:26.775+10:00  INFO 10440 --- [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.26]
-2024-09-07T12:29:26.865+10:00  INFO 10440 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2024-09-07T12:29:26.866+10:00  INFO 10440 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1824 ms
-2024-09-07T12:29:27.064+10:00  INFO 10440 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2024-09-07T12:29:27.138+10:00  INFO 10440 --- [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.2.Final
-2024-09-07T12:29:27.185+10:00  INFO 10440 --- [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2024-09-07T12:29:27.512+10:00  INFO 10440 --- [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2024-09-07T12:29:27.547+10:00  INFO 10440 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2024-09-07T12:29:27.703+10:00  INFO 10440 --- [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@2c815fdc
-2024-09-07T12:29:27.705+10:00  INFO 10440 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2024-09-07T12:29:27.751+10:00  WARN 10440 --- [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2024-09-07T12:29:28.660+10:00  INFO 10440 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2024-09-07T12:29:28.726+10:00  INFO 10440 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2024-09-07T12:29:29.115+10:00 DEBUG 10440 --- [main] c.c.c.security.JwtRequestFilter          : Filter 'jwtRequestFilter' configured for use
-2024-09-07T12:29:29.259+10:00  WARN 10440 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2024-09-07T12:29:29.298+10:00  INFO 10440 --- [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
-2024-09-07T12:29:30.185+10:00 DEBUG 10440 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, CorsFilter, LogoutFilter, JwtRequestFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
-2024-09-07T12:29:30.494+10:00  INFO 10440 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
-2024-09-07T12:29:30.506+10:00  INFO 10440 --- [main] c.cl.centralapi.CentralApiApplication    : Started CentralApiApplication in 5.996 seconds (process running for 6.634)
-2024-09-07T12:29:38.976+10:00  INFO 10440 --- [http-nio-8080-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2024-09-07T12:29:38.976+10:00  INFO 10440 --- [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2024-09-07T12:29:38.978+10:00  INFO 10440 --- [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
-2024-09-07T12:29:38.997+10:00 DEBUG 10440 --- [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Securing POST /api/auth/login
-2024-09-07T12:29:39.005+10:00 DEBUG 10440 --- [http-nio-8080-exec-2] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
-2024-09-07T12:29:39.007+10:00 DEBUG 10440 --- [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Secured POST /api/auth/login
-2024-09-07T12:29:39.085+10:00  INFO 10440 --- [http-nio-8080-exec-2] c.c.c.controller.AuthController          : Attempting to authenticate user: simon.hanmer@example.com
-2024-09-07T12:29:39.375+10:00 DEBUG 10440 --- [http-nio-8080-exec-2] o.s.s.a.dao.DaoAuthenticationProvider    : Authenticated user
-2024-09-07T12:29:39.375+10:00  INFO 10440 --- [http-nio-8080-exec-2] c.c.c.controller.AuthController          : Authentication successful for user: simon.hanmer@example.com
-2024-09-07T12:29:39.417+10:00  INFO 10440 --- [http-nio-8080-exec-2] c.c.c.controller.AuthController          : Generated JWT token for user: simon.hanmer@example.com
-2024-09-07T12:29:47.042+10:00 DEBUG 10440 --- [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Securing POST /api/images/upload
-2024-09-07T12:29:47.100+10:00 DEBUG 10440 --- [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Secured POST /api/images/upload
-2024-09-07T12:29:52.459+10:00 DEBUG 10440 --- [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Securing GET /api/collections/user/1
-2024-09-07T12:29:52.470+10:00 DEBUG 10440 --- [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Secured GET /api/collections/user/1
-2024-09-07T12:30:01.446+10:00 DEBUG 10440 --- [http-nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Securing GET /api/images/collections?userId=1
-2024-09-07T12:30:01.457+10:00 DEBUG 10440 --- [http-nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Secured GET /api/images/collections?userId=1
-2024-09-07T12:30:10.572+10:00 DEBUG 10440 --- [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Securing GET /api/collections/all
-2024-09-07T12:30:10.579+10:00 DEBUG 10440 --- [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Secured GET /api/collections/all
-2024-09-07T12:31:05.296+10:00  INFO 10440 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
-2024-09-07T12:31:05.299+10:00  INFO 10440 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2024-09-07T12:31:05.306+10:00  INFO 10440 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2024-09-07T19:58:25.677+10:00 DEBUG 27664 --- [http-nio-8080-exec-8] o.s.security.web.FilterChainProxy        : Securing OPTIONS /api/images/upload
+2024-09-07T19:58:25.684+10:00 DEBUG 27664 --- [http-nio-8080-exec-7] o.s.security.web.FilterChainProxy        : Securing POST /api/images/upload
+2024-09-07T19:58:25.696+10:00 DEBUG 27664 --- [http-nio-8080-exec-7] o.s.security.web.FilterChainProxy        : Secured POST /api/images/upload
+2024-09-07T20:04:58.296+10:00  INFO 27664 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-09-07T20:04:58.300+10:00  INFO 27664 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2024-09-07T20:04:58.312+10:00  INFO 27664 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2024-09-07T20:05:02.328+10:00  INFO 18740 --- [main] c.cl.centralapi.CentralApiApplication    : Starting CentralApiApplication using Java 18.0.2 with PID 18740 (C:\Users\SLHan\OneDrive\Desktop\Capstone\Central API\CentralAPI\target\classes started by SLHan in C:\Users\SLHan\OneDrive\Desktop\Capstone\Central API\CentralAPI)
+2024-09-07T20:05:02.330+10:00 DEBUG 18740 --- [main] c.cl.centralapi.CentralApiApplication    : Running with Spring Boot v3.3.2, Spring v6.1.11
+2024-09-07T20:05:02.331+10:00  INFO 18740 --- [main] c.cl.centralapi.CentralApiApplication    : No active profile set, falling back to 1 default profile: "default"
+2024-09-07T20:05:03.336+10:00  INFO 18740 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-09-07T20:05:03.403+10:00  INFO 18740 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 59 ms. Found 3 JPA repository interfaces.
+2024-09-07T20:05:04.184+10:00  INFO 18740 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-09-07T20:05:04.202+10:00  INFO 18740 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-09-07T20:05:04.202+10:00  INFO 18740 --- [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.26]
+2024-09-07T20:05:04.291+10:00  INFO 18740 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-09-07T20:05:04.291+10:00  INFO 18740 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1908 ms
+2024-09-07T20:05:04.488+10:00  INFO 18740 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-09-07T20:05:04.591+10:00  INFO 18740 --- [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.2.Final
+2024-09-07T20:05:04.656+10:00  INFO 18740 --- [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2024-09-07T20:05:05.039+10:00  INFO 18740 --- [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-09-07T20:05:05.075+10:00  INFO 18740 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2024-09-07T20:05:05.238+10:00  INFO 18740 --- [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@dae5e0
+2024-09-07T20:05:05.240+10:00  INFO 18740 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2024-09-07T20:05:05.293+10:00  WARN 18740 --- [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-09-07T20:05:06.280+10:00  INFO 18740 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-09-07T20:05:06.359+10:00  INFO 18740 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-09-07T20:05:06.736+10:00 DEBUG 18740 --- [main] c.c.c.security.JwtRequestFilter          : Filter 'jwtRequestFilter' configured for use
+2024-09-07T20:05:06.887+10:00  WARN 18740 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2024-09-07T20:05:06.926+10:00  INFO 18740 --- [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2024-09-07T20:05:07.800+10:00 DEBUG 18740 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, CorsFilter, LogoutFilter, JwtRequestFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2024-09-07T20:05:08.118+10:00  INFO 18740 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2024-09-07T20:05:08.131+10:00  INFO 18740 --- [main] c.cl.centralapi.CentralApiApplication    : Started CentralApiApplication in 6.293 seconds (process running for 6.914)
+2024-09-07T20:05:33.328+10:00  INFO 18740 --- [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-09-07T20:05:33.328+10:00  INFO 18740 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-09-07T20:05:33.329+10:00  INFO 18740 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2024-09-07T20:05:33.360+10:00 DEBUG 18740 --- [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing OPTIONS /api/images/upload
+2024-09-07T20:05:33.391+10:00 DEBUG 18740 --- [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Securing POST /api/images/upload
+2024-09-07T20:05:33.783+10:00 DEBUG 18740 --- [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Secured POST /api/images/upload
+2024-09-07T20:06:29.642+10:00 DEBUG 18740 --- [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Securing OPTIONS /api/images/upload
+2024-09-07T20:06:29.648+10:00 DEBUG 18740 --- [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Securing POST /api/images/upload
+2024-09-07T20:06:29.667+10:00 DEBUG 18740 --- [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Secured POST /api/images/upload
+2024-09-07T20:10:14.134+10:00  INFO 18740 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-09-07T20:10:14.138+10:00  INFO 18740 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2024-09-07T20:10:14.154+10:00  INFO 18740 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
