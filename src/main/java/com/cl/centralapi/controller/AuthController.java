@@ -1,5 +1,6 @@
 package com.cl.centralapi.controller;
 
+import com.cl.centralapi.model.AuthRequest;
 import com.cl.centralapi.model.AuthenticationResponse;
 import com.cl.centralapi.model.User;
 import com.cl.centralapi.service.CustomUserDetailsService;
@@ -22,6 +23,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -65,17 +69,25 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
         }
 
+        // Fetch UserDetails and User object
         final UserDetails userDetails = userDetailsService.loadUserByUsername(authRequest.getEmail());
-        final String jwt = jwtUtil.generateToken(userDetails.getUsername());
-
-        // Fetch additional user details using UserService
         User user = userService.findByEmail(authRequest.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        // Create a response object with the token, user details, and user type
+        // Create a map of extra claims
+        Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("userType", user.getUserType().name());  // Add userType
+        extraClaims.put("userRole", user.getUserRole().name());  // Add userRole
+        extraClaims.put("userId", user.getUserRole().name());  // Add userId
+
+        // Generate JWT with extra claims
+        final String jwt = jwtUtil.generateToken(userDetails.getUsername(), extraClaims);
+
+        // Create the authentication response object
         AuthenticationResponse response = new AuthenticationResponse(jwt, user.getEmail(), user.getName(), user.getUserRole(), user.getUserType(), user.getId());
 
         logger.info("Generated JWT token for user: {}", authRequest.getEmail());
         return ResponseEntity.ok(response);
     }
+
 }

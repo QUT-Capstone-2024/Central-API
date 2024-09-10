@@ -1,8 +1,11 @@
 package com.cl.centralapi.controller;
 
+import com.cl.centralapi.enums.UserType;
 import com.cl.centralapi.model.Collection;
-import com.cl.centralapi.service.CollectionService;
+import com.cl.centralapi.model.User;
 import com.cl.centralapi.security.CustomUserDetails;
+import com.cl.centralapi.service.CollectionService;
+import com.cl.centralapi.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -11,8 +14,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,6 +31,9 @@ public class CollectionController {
     @Autowired
     private CollectionService collectionService;
 
+    @Autowired
+    private UserService userService;
+
     // Get collections for a specific user
     @Operation(summary = "Get collections by user ID", description = "Retrieve all collections for a specific user")
     @ApiResponses(value = {
@@ -37,11 +43,12 @@ public class CollectionController {
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)
     })
     @GetMapping("/user/{userId}")
-    @PreAuthorize(
-            "(hasAuthority('ROLE_INTERNAL') and principal.userType == T(com.cl.centralapi.enums.UserType).CL_ADMIN) " +
-                    "or (hasAuthority('ROLE_USER') and #userId == principal.id)"
-    )
-    public ResponseEntity<List<Collection>> getCollectionsByUserId(@PathVariable Long userId) {
+    public ResponseEntity<List<Collection>> getCollectionsByUserId(@PathVariable Long userId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        // Only allow admin or the user to retrieve their collections
+        if (!customUserDetails.getUserType().equals(UserType.CL_ADMIN) && !customUserDetails.getId().equals(userId)) {
+            return ResponseEntity.status(403).body(Collections.emptyList());
+        }
+
         List<Collection> collections = collectionService.findCollectionsByUserId(userId);
         if (collections.isEmpty()) {
             return ResponseEntity.status(404).body(Collections.emptyList());
@@ -58,8 +65,11 @@ public class CollectionController {
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)
     })
     @GetMapping("/all")
-    @PreAuthorize("hasAuthority('ROLE_INTERNAL') and principal.userType == T(com.cl.centralapi.enums.UserType).CL_ADMIN")
-    public ResponseEntity<List<Collection>> getAllCollections() {
+    public ResponseEntity<List<Collection>> getAllCollections(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        if (!customUserDetails.getUserType().equals(UserType.CL_ADMIN)) {
+            return ResponseEntity.status(403).build();  // Only allow admins
+        }
+
         List<Collection> collections = collectionService.findAllCollections();
         return ResponseEntity.ok(collections);
     }
@@ -73,17 +83,21 @@ public class CollectionController {
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)
     })
     @PostMapping
-    public ResponseEntity<Collection> createCollection(@RequestBody Collection collection) {
-        // Fetch the authenticated user from the SecurityContext
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        Long userId = userDetails.getId();
+    public ResponseEntity<Collection> createCollection(@RequestBody Collection collection,
+                                                       @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        // Get the user ID from the authenticated user's details
+        Long userId = customUserDetails.getId();
 
-        // Set the property owner ID to the authenticated user's ID
-        collection.setPropertyOwnerId(userId);
+        // Fetch the User object based on the userId
+        User user = userService.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        // Set the User object in the Collection entity
+        collection.setUser(user);  // Link the collection to the authenticated user
 
         // Save the collection
         Collection savedCollection = collectionService.saveCollection(collection);
+
         return ResponseEntity.status(201).body(savedCollection); // Return the created collection
     }
 
@@ -97,14 +111,19 @@ public class CollectionController {
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)
     })
     @GetMapping("/{id}")
-    @PreAuthorize(
-            "(hasAuthority('ROLE_INTERNAL') and principal.userType == T(com.cl.centralapi.enums.UserType).CL_ADMIN) " +
-                    "or (hasAuthority('ROLE_USER') and #userId == principal.id)"
-    )
-    public ResponseEntity<Collection> getCollectionById(@PathVariable Long id) {
+    public ResponseEntity<Collection> getCollectionById(@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         Optional<Collection> collection = collectionService.findById(id);
-        return collection.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+
+        if (collection.isPresent()) {
+            // Only allow access if the user is an admin or the owner of the collection
+            Collection col = collection.get();
+            if (!customUserDetails.getUserType().equals(UserType.CL_ADMIN) && !col.getId().equals(customUserDetails.getId())) {
+                return ResponseEntity.status(403).build();
+            }
+            return ResponseEntity.ok(col);
+        }
+
+        return ResponseEntity.notFound().build();
     }
 
     // Update an existing collection
@@ -117,15 +136,20 @@ public class CollectionController {
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)
     })
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('ROLE_INTERNAL') and principal.userType == T(com.cl.centralapi.enums.UserType).CL_ADMIN")
-    public ResponseEntity<?> updateCollection(@PathVariable Long id, @RequestBody Collection updatedCollection) {
-        try {
+    public ResponseEntity<?> updateCollection(@PathVariable Long id, @RequestBody Collection updatedCollection, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        Optional<Collection> collection = collectionService.findById(id);
+
+        if (collection.isPresent()) {
+            // Only allow admins or the owner to update the collection
+            Collection col = collection.get();
+            if (!customUserDetails.getUserType().equals(UserType.CL_ADMIN) && !col.getId().equals(customUserDetails.getId())) {
+                return ResponseEntity.status(403).body("You do not have permission to update this collection.");
+            }
+
             Collection savedCollection = collectionService.updateCollection(id, updatedCollection);
             return ResponseEntity.ok(savedCollection);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(404).body("Collection not found: " + e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error updating collection: " + e.getMessage());
+        } else {
+            return ResponseEntity.status(404).body("Collection not found");
         }
     }
 
@@ -137,13 +161,20 @@ public class CollectionController {
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)
     })
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('ROLE_INTERNAL') and principal.userType == T(com.cl.centralapi.enums.UserType).CL_ADMIN")
-    public ResponseEntity<?> deleteCollection(@PathVariable Long id) {
-        try {
+    public ResponseEntity<?> deleteCollection(@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        Optional<Collection> collection = collectionService.findById(id);
+
+        if (collection.isPresent()) {
+            // Only allow admins or the owner to delete the collection
+            Collection col = collection.get();
+            if (!customUserDetails.getUserType().equals(UserType.CL_ADMIN) && !col.getId().equals(customUserDetails.getId())) {
+                return ResponseEntity.status(403).body("You do not have permission to delete this collection.");
+            }
+
             collectionService.deleteCollectionById(id);
-            return ResponseEntity.status(204).build(); // 204 No Content when successfully deleted
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error deleting collection: " + e.getMessage());
+            return ResponseEntity.status(204).build();
+        } else {
+            return ResponseEntity.status(404).body("Collection not found");
         }
     }
 }

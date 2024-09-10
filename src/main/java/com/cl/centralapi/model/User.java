@@ -2,6 +2,7 @@ package com.cl.centralapi.model;
 
 import com.cl.centralapi.enums.UserType;
 import com.cl.centralapi.enums.UserRole;
+import com.cl.centralapi.enums.UserStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.List;
@@ -22,19 +23,23 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
+    @Enumerated(EnumType.STRING)
+    private UserStatus status = UserStatus.ACTIVE;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Collection> collections;
 
     public User() {}
 
-    public User(String name, String email, String password, String phoneNumber, UserType userType, UserRole userRole, List<Collection> collections) {
+    public User(String name, String email, String password, String phoneNumber, UserType userType, UserRole userRole, UserStatus status, List<Collection> collections) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.phoneNumber = phoneNumber;
         this.userType = userType;
         this.userRole = userRole;
+        this.status = status;
         this.collections = collections;
     }
 
@@ -101,5 +106,13 @@ public class User {
 
     public void setCollections(List<Collection> collections) {
         this.collections = collections;
+    }
+
+    public UserStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(UserStatus status) {
+        this.status = status;
     }
 }

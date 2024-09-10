@@ -37,8 +37,8 @@ public class CollectionService {
         if (updatedCollection.getPropertySize() != null) {
             existingCollection.setPropertySize(updatedCollection.getPropertySize());
         }
-        if (updatedCollection.getPropertyOwnerId() != null) {
-            existingCollection.setPropertyOwnerId(updatedCollection.getPropertyOwnerId());
+        if (updatedCollection.getId() != null) {
+            existingCollection.setId(updatedCollection.getId());
         }
         if (updatedCollection.getBedrooms() != null) {
             existingCollection.setBedrooms(updatedCollection.getBedrooms());

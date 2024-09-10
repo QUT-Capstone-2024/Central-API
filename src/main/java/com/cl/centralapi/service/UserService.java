@@ -1,6 +1,8 @@
 package com.cl.centralapi.service;
 
+import com.cl.centralapi.enums.UserStatus;
 import com.cl.centralapi.exceptions.EmailAlreadyUsedException;
+import com.cl.centralapi.exceptions.UserNotFoundException;
 import com.cl.centralapi.model.User;
 import com.cl.centralapi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,6 +86,22 @@ public class UserService {
 
     public List<User> findAllUsers() {
         return userRepository.findAll();
+    }
+
+    public void updateUserStatus(Long id, UserStatus status) {
+        Optional<User> userOptional = userRepository.findById(id);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            user.setStatus(status);
+            userRepository.save(user);
+        } else {
+            throw new UserNotFoundException("User not found");
+        }
+    }
+
+
+    public List<User> getUsersByStatus(UserStatus status) {
+        return userRepository.findAllByStatus(status);
     }
 
 }

@@ -27,12 +27,13 @@ public class CustomUserDetailsService implements UserDetailsService {
         User user = userRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + username));
 
+        // Return CustomUserDetails which includes the userType
         return new CustomUserDetails(user);
     }
 
     // Check if the user is the owner of the collection
     public boolean isUserOwnerOfCollection(CustomUserDetails userDetails, Long collectionId) {
         Optional<Collection> collection = collectionRepository.findById(collectionId);
-        return collection.map(col -> col.getPropertyOwnerId().equals(userDetails.getId())).orElse(false);
+        return collection.map(col -> col.getId().equals(userDetails.getId())).orElse(false);
     }
 }
