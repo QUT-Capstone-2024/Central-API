@@ -84,4 +84,12 @@ public class CollectionService {
     public List<Collection> findAllCollections() {
         return collectionRepository.findAll();
     }
+
+    // Check if the collection is owned by the user
+    public boolean isCollectionOwnedByUser(Long userId, Long collectionId) {
+        Collection collection = collectionRepository.findById(collectionId)
+                .orElseThrow(() -> new IllegalArgumentException("Collection not found"));
+
+        return collection.getUser().getId().equals(userId);
+    }
 }

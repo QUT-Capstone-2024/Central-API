@@ -172,8 +172,11 @@ public class ImageService {
     public boolean isUserAdmin(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        return user.getUserType().equals(UserType.CL_ADMIN);
+
+        // Check if the user is either CL_ADMIN or HARBINGER
+        return user.getUserType().equals(UserType.CL_ADMIN) || user.getUserType().equals(UserType.HARBINGER);
     }
+
 
     public void deleteCollectionById(Long collectionId) {
         Collection collection = collectionRepository.findById(collectionId)

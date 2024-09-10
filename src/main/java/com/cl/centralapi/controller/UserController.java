@@ -59,7 +59,7 @@ public class UserController {
                     content = @Content) })
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        if (!customUserDetails.getUserType().equals(UserType.CL_ADMIN) && !customUserDetails.getId().equals(id)) {
+        if (!userService.isAdminOrHarbinger(customUserDetails.getId()) && !customUserDetails.getId().equals(id)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
         }
         return userService.findById(id)
@@ -79,7 +79,7 @@ public class UserController {
                     content = @Content) })
     @GetMapping("/email/{email}")
     public ResponseEntity<User> getUserByEmail(@PathVariable String email, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        if (!customUserDetails.getUserType().equals(UserType.CL_ADMIN)) {
+        if (!userService.isAdminOrHarbinger(customUserDetails.getId())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
         }
         return userService.findByEmail(email)
@@ -101,7 +101,7 @@ public class UserController {
                     content = @Content) })
     @PutMapping("/{id}")
     public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User user, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        if (!customUserDetails.getUserType().equals(UserType.CL_ADMIN) && !customUserDetails.getId().equals(id)) {
+        if (!userService.isAdminOrHarbinger(customUserDetails.getId()) && !customUserDetails.getId().equals(id)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You do not have permission to update this user.");
         }
         try {
@@ -125,7 +125,7 @@ public class UserController {
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        if (!customUserDetails.getUserType().equals(UserType.HARBINGER)) {
+        if (!userService.isAdminOrHarbinger(customUserDetails.getId())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You do not have permission to delete this user.");
         }
         userService.deleteUserById(id);
@@ -141,7 +141,7 @@ public class UserController {
     })
     @PatchMapping("/archive/{id}")
     public ResponseEntity<?> archiveUser(@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        if (!customUserDetails.getUserType().equals(UserType.CL_ADMIN)) {
+        if (!userService.isAdminOrHarbinger(customUserDetails.getId())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You do not have permission to archive this user.");
         }
         try {
@@ -163,7 +163,7 @@ public class UserController {
     })
     @PatchMapping("/reactivate/{id}")
     public ResponseEntity<?> reactivateUser(@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        if (!customUserDetails.getUserType().equals(UserType.CL_ADMIN)) {
+        if (!userService.isAdminOrHarbinger(customUserDetails.getId())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You do not have permission to reactivate this user.");
         }
         try {

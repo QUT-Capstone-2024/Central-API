@@ -44,8 +44,7 @@ public class CollectionController {
     })
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Collection>> getCollectionsByUserId(@PathVariable Long userId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        // Only allow admin or the user to retrieve their collections
-        if (!customUserDetails.getUserType().equals(UserType.CL_ADMIN) && !customUserDetails.getId().equals(userId)) {
+        if (!userService.isAdminOrHarbinger(customUserDetails.getId()) && !customUserDetails.getId().equals(userId)) {
             return ResponseEntity.status(403).body(Collections.emptyList());
         }
 
@@ -66,9 +65,8 @@ public class CollectionController {
     })
     @GetMapping("/all")
     public ResponseEntity<List<Collection>> getAllCollections(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        if (!customUserDetails.getUserType().equals(UserType.CL_ADMIN) &&
-            !customUserDetails.getUserType().equals(UserType.HARBINGER)) {
-            return ResponseEntity.status(403).build();  // Only allow admins
+        if (!userService.isAdminOrHarbinger(customUserDetails.getId())) {
+            return ResponseEntity.status(403).build();
         }
 
         List<Collection> collections = collectionService.findAllCollections();
@@ -86,22 +84,15 @@ public class CollectionController {
     @PostMapping
     public ResponseEntity<Collection> createCollection(@RequestBody Collection collection,
                                                        @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        // Get the user ID from the authenticated user's details
         Long userId = customUserDetails.getId();
-
-        // Fetch the User object based on the userId
         User user = userService.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        // Set the User object in the Collection entity
         collection.setUser(user);  // Link the collection to the authenticated user
-
-        // Save the collection
         Collection savedCollection = collectionService.saveCollection(collection);
 
-        return ResponseEntity.status(201).body(savedCollection); // Return the created collection
+        return ResponseEntity.status(201).body(savedCollection);
     }
-
 
     // Get collection by ID
     @Operation(summary = "Get collection by ID", description = "This endpoint allows you to retrieve a collection by its ID.")
@@ -116,9 +107,9 @@ public class CollectionController {
         Optional<Collection> collection = collectionService.findById(id);
 
         if (collection.isPresent()) {
-            // Only allow access if the user is an admin or the owner of the collection
             Collection col = collection.get();
-            if (!customUserDetails.getUserType().equals(UserType.CL_ADMIN) && !col.getId().equals(customUserDetails.getId())) {
+            if (!userService.isAdminOrHarbinger(customUserDetails.getId()) &&
+                    !collectionService.isCollectionOwnedByUser(customUserDetails.getId(), id)) {
                 return ResponseEntity.status(403).build();
             }
             return ResponseEntity.ok(col);
@@ -141,9 +132,9 @@ public class CollectionController {
         Optional<Collection> collection = collectionService.findById(id);
 
         if (collection.isPresent()) {
-            // Only allow admins or the owner to update the collection
             Collection col = collection.get();
-            if (!customUserDetails.getUserType().equals(UserType.CL_ADMIN) && !col.getId().equals(customUserDetails.getId())) {
+            if (!userService.isAdminOrHarbinger(customUserDetails.getId()) &&
+                    !collectionService.isCollectionOwnedByUser(customUserDetails.getId(), id)) {
                 return ResponseEntity.status(403).body("You do not have permission to update this collection.");
             }
 
@@ -166,9 +157,9 @@ public class CollectionController {
         Optional<Collection> collection = collectionService.findById(id);
 
         if (collection.isPresent()) {
-            // Only allow admins or the owner to delete the collection
             Collection col = collection.get();
-            if (!customUserDetails.getUserType().equals(UserType.CL_ADMIN) && !col.getId().equals(customUserDetails.getId())) {
+            if (!userService.isAdminOrHarbinger(customUserDetails.getId()) &&
+                    !collectionService.isCollectionOwnedByUser(customUserDetails.getId(), id)) {
                 return ResponseEntity.status(403).body("You do not have permission to delete this collection.");
             }
 
@@ -179,3 +170,4 @@ public class CollectionController {
         }
     }
 }
+

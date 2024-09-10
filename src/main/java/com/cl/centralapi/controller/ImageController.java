@@ -7,6 +7,7 @@ import com.cl.centralapi.model.Collection;
 import com.cl.centralapi.model.Image;
 import com.cl.centralapi.security.CustomUserDetails;
 import com.cl.centralapi.service.ImageService;
+import com.cl.centralapi.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -32,6 +33,9 @@ public class ImageController {
     @Autowired
     private ImageService imageService;
 
+    @Autowired
+    private UserService userService; // Inject UserService
+
     @Operation(summary = "Upload images to a collection", description = "This endpoint facilitates the upload of images to image collections.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Upload successful",
@@ -50,7 +54,7 @@ public class ImageController {
                                          @RequestParam(value = "description", required = false) String description,
                                          @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         // Validate that the user is allowed to upload
-        if (!imageService.isUserAdmin(customUserDetails.getId()) &&
+        if (!userService.isAdminOrHarbinger(customUserDetails.getId()) &&
                 !imageService.isCollectionOwnedByUser(customUserDetails.getId(), collectionId)) {
             return ResponseEntity.status(403).body("You do not have permission to upload images to this collection.");
         }
@@ -62,7 +66,6 @@ public class ImageController {
             return ResponseEntity.status(500).body(Map.of("error", "Error uploading and classifying image", "message", e.getMessage()));
         }
     }
-
 
     @Operation(summary = "Get image collections by user ID", description = "This endpoint allows you to retrieve all image collections owned by the authenticated user.")
     @ApiResponses(value = {
@@ -77,7 +80,7 @@ public class ImageController {
     public ResponseEntity<?> getCollectionsByUserId(@RequestParam("userId") Long userId,
                                                     @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         // Validate that the user can access collections
-        if (!imageService.isUserAdmin(customUserDetails.getId()) &&
+        if (!userService.isAdminOrHarbinger(customUserDetails.getId()) &&
                 !imageService.isCollectionOwnedByUser(customUserDetails.getId(), userId)) {
             return ResponseEntity.status(403).body("You do not have permission to access these collections.");
         }
@@ -99,7 +102,7 @@ public class ImageController {
     public ResponseEntity<?> getImagesByCollectionId(@PathVariable Long collectionId,
                                                      @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         // Validate access to the collection
-        if (!imageService.isUserAdmin(customUserDetails.getId()) &&
+        if (!userService.isAdminOrHarbinger(customUserDetails.getId()) &&
                 !imageService.isCollectionOwnedByUser(customUserDetails.getId(), collectionId)) {
             return ResponseEntity.status(403).body("You do not have permission to access this collection.");
         }
@@ -123,7 +126,7 @@ public class ImageController {
     public ResponseEntity<?> deleteCollectionById(@PathVariable Long collectionId,
                                                   @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         // Validate that the user can delete the collection
-        if (!imageService.isUserAdmin(customUserDetails.getId()) &&
+        if (!userService.isAdminOrHarbinger(customUserDetails.getId()) &&
                 !imageService.isCollectionOwnedByUser(customUserDetails.getId(), collectionId)) {
             return ResponseEntity.status(403).body("You do not have permission to delete this collection.");
         }
@@ -148,7 +151,7 @@ public class ImageController {
                                              @PathVariable Long imageId,
                                              @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         // Validate that the user can delete the image
-        if (!imageService.isUserAdmin(customUserDetails.getId()) &&
+        if (!userService.isAdminOrHarbinger(customUserDetails.getId()) &&
                 !imageService.isCollectionOwnedByUser(customUserDetails.getId(), collectionId)) {
             return ResponseEntity.status(403).body("You do not have permission to delete this image.");
         }
@@ -176,7 +179,7 @@ public class ImageController {
                                          @RequestBody Image updatedImage,
                                          @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         // Validate that the user can update the image
-        if (!imageService.isUserAdmin(customUserDetails.getId()) &&
+        if (!userService.isAdminOrHarbinger(customUserDetails.getId()) &&
                 !imageService.isCollectionOwnedByUser(customUserDetails.getId(), collectionId)) {
             return ResponseEntity.status(403).body("You do not have permission to update this image.");
         }
@@ -205,7 +208,7 @@ public class ImageController {
                                                     @RequestParam Status status,
                                                     @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         // Validate that the user can update the collection status
-        if (!customUserDetails.getUserType().equals(UserType.CL_ADMIN) &&
+        if (!userService.isAdminOrHarbinger(customUserDetails.getId()) &&
                 !imageService.isCollectionOwnedByUser(customUserDetails.getId(), collectionId)) {
             return ResponseEntity.status(403).body("You do not have permission to update this collection's status.");
         }
@@ -220,3 +223,4 @@ public class ImageController {
         }
     }
 }
+
