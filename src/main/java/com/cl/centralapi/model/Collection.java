@@ -26,9 +26,6 @@ public class Collection {
     private Integer propertySize;
 
     @Column(nullable = false)
-    private Long propertyOwnerId;
-
-    @Column(nullable = false)
     private Integer bedrooms;
 
     @Column(nullable = false)
@@ -63,7 +60,6 @@ public class Collection {
         this.propertyAddress = propertyAddress;
         this.collectionId = collectionId;
         this.propertySize = propertySize;
-        this.propertyOwnerId = propertyOwnerId;
         this.bedrooms = bedrooms;
         this.bathrooms = bathrooms;
         this.parkingSpaces = parkingSpaces;
@@ -111,14 +107,6 @@ public class Collection {
 
     public void setPropertySize(Integer propertySize) {
         this.propertySize = propertySize;
-    }
-
-    public Long getPropertyOwnerId() {
-        return propertyOwnerId;
-    }
-
-    public void setPropertyOwnerId(Long propertyOwnerId) {
-        this.propertyOwnerId = propertyOwnerId;
     }
 
     public Integer getBedrooms() {

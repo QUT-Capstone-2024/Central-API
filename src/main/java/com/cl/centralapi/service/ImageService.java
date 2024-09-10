@@ -165,7 +165,7 @@ public class ImageService {
         Collection collection = collectionRepository.findById(collectionId)
                 .orElseThrow(() -> new IllegalArgumentException("Collection not found"));
 
-        Long collectionOwnerId = collection.getPropertyOwnerId();
+        Long collectionOwnerId = collection.getId();
         return collectionOwnerId != null && collectionOwnerId.equals(userId);
     }
 

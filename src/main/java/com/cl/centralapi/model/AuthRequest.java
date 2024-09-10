@@ -1,6 +1,6 @@
-package com.cl.centralapi.controller;
+package com.cl.centralapi.model;
 
-class AuthRequest {
+public class AuthRequest {
     private String email;
     private String password;
 

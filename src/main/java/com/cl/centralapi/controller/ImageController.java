@@ -2,8 +2,10 @@ package com.cl.centralapi.controller;
 
 import com.cl.centralapi.enums.ImageTags;
 import com.cl.centralapi.enums.Status;
+import com.cl.centralapi.enums.UserType;
 import com.cl.centralapi.model.Collection;
 import com.cl.centralapi.model.Image;
+import com.cl.centralapi.security.CustomUserDetails;
 import com.cl.centralapi.service.ImageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -13,7 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -45,10 +47,16 @@ public class ImageController {
                                          @RequestParam("file") MultipartFile file,
                                          @RequestParam("tag") ImageTags tag,
                                          @RequestParam(value = "customTag", required = false) String customTag,
-                                         @RequestParam(value = "description", required = false) String description) {
+                                         @RequestParam(value = "description", required = false) String description,
+                                         @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        // Validate that the user is allowed to upload
+        if (!imageService.isUserAdmin(customUserDetails.getId()) &&
+                !imageService.isCollectionOwnedByUser(customUserDetails.getId(), collectionId)) {
+            return ResponseEntity.status(403).body("You do not have permission to upload images to this collection.");
+        }
+
         try {
-            URI location = imageService.uploadImage(userId, Long.valueOf(String.valueOf(collectionId)), file, tag, customTag, description);
-            // Return the response in JSON format with a success message and the URL
+            URI location = imageService.uploadImage(userId, collectionId, file, tag, customTag, description);
             return ResponseEntity.created(location).body(Map.of("message", "Image uploaded successfully", "url", location.toString()));
         } catch (IOException e) {
             return ResponseEntity.status(500).body(Map.of("error", "Error uploading and classifying image", "message", e.getMessage()));
@@ -66,8 +74,14 @@ public class ImageController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content) })
     @GetMapping("/collections")
-    @PreAuthorize("@imageService.isUserAdmin(principal.userId) or @imageService.isCollectionOwnedByUser(principal.userId, #userId)")
-    public ResponseEntity<?> getCollectionsByUserId(@RequestParam("userId") Long userId) {
+    public ResponseEntity<?> getCollectionsByUserId(@RequestParam("userId") Long userId,
+                                                    @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        // Validate that the user can access collections
+        if (!imageService.isUserAdmin(customUserDetails.getId()) &&
+                !imageService.isCollectionOwnedByUser(customUserDetails.getId(), userId)) {
+            return ResponseEntity.status(403).body("You do not have permission to access these collections.");
+        }
+
         List<Collection> collections = imageService.getCollectionsByUserId(userId);
         return ResponseEntity.ok(collections);
     }
@@ -82,8 +96,14 @@ public class ImageController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content)})
     @GetMapping("/collections/{collectionId}/images")
-    @PreAuthorize("@imageService.isUserAdmin(principal.userId) or @imageService.isCollectionOwnedByUser(principal.userId, #collectionId)")
-    public ResponseEntity<?> getImagesByCollectionId(@PathVariable Long collectionId) {
+    public ResponseEntity<?> getImagesByCollectionId(@PathVariable Long collectionId,
+                                                     @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        // Validate access to the collection
+        if (!imageService.isUserAdmin(customUserDetails.getId()) &&
+                !imageService.isCollectionOwnedByUser(customUserDetails.getId(), collectionId)) {
+            return ResponseEntity.status(403).body("You do not have permission to access this collection.");
+        }
+
         try {
             List<Image> images = imageService.getImagesByCollectionId(collectionId);
             return ResponseEntity.ok(images);
@@ -100,8 +120,14 @@ public class ImageController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @DeleteMapping("/collections/{collectionId}")
-    @PreAuthorize("@imageService.isUserAdmin(principal.userId) or @imageService.isCollectionOwnedByUser(principal.userId, #collectionId)")
-    public ResponseEntity<?> deleteCollectionById(@PathVariable Long collectionId) {
+    public ResponseEntity<?> deleteCollectionById(@PathVariable Long collectionId,
+                                                  @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        // Validate that the user can delete the collection
+        if (!imageService.isUserAdmin(customUserDetails.getId()) &&
+                !imageService.isCollectionOwnedByUser(customUserDetails.getId(), collectionId)) {
+            return ResponseEntity.status(403).body("You do not have permission to delete this collection.");
+        }
+
         try {
             imageService.deleteCollectionById(collectionId);
             return ResponseEntity.status(204).build(); // No content for successful deletion
@@ -118,8 +144,15 @@ public class ImageController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @DeleteMapping("/collections/{collectionId}/images/{imageId}")
-    @PreAuthorize("@imageService.isUserAdmin(principal.userId) or @imageService.isCollectionOwnedByUser(principal.userId, #collectionId)")
-    public ResponseEntity<?> deleteImageById(@PathVariable Long collectionId, @PathVariable Long imageId) {
+    public ResponseEntity<?> deleteImageById(@PathVariable Long collectionId,
+                                             @PathVariable Long imageId,
+                                             @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        // Validate that the user can delete the image
+        if (!imageService.isUserAdmin(customUserDetails.getId()) &&
+                !imageService.isCollectionOwnedByUser(customUserDetails.getId(), collectionId)) {
+            return ResponseEntity.status(403).body("You do not have permission to delete this image.");
+        }
+
         try {
             imageService.deleteImage(collectionId, imageId);
             return ResponseEntity.status(204).build(); // No content for successful deletion
@@ -138,8 +171,16 @@ public class ImageController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content) })
     @PutMapping("/collections/{collectionId}/images/{imageId}")
-    @PreAuthorize("@imageService.isUserAdmin(principal.userId) or @imageService.isCollectionOwnedByUser(principal.userId, #collectionId)")
-    public ResponseEntity<?> updateImage(@PathVariable Long collectionId, @PathVariable Long imageId, @RequestBody Image updatedImage) {
+    public ResponseEntity<?> updateImage(@PathVariable Long collectionId,
+                                         @PathVariable Long imageId,
+                                         @RequestBody Image updatedImage,
+                                         @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        // Validate that the user can update the image
+        if (!imageService.isUserAdmin(customUserDetails.getId()) &&
+                !imageService.isCollectionOwnedByUser(customUserDetails.getId(), collectionId)) {
+            return ResponseEntity.status(403).body("You do not have permission to update this image.");
+        }
+
         try {
             imageService.updateImage(imageId, updatedImage);
             return ResponseEntity.ok("Image updated successfully.");
@@ -160,8 +201,15 @@ public class ImageController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content) })
     @PutMapping("/collections/{collectionId}/status")
-    @PreAuthorize("principal.userType == T(com.cl.centralapi.enums.UserType).CL_ADMIN or @imageService.isCollectionOwnedByUser(principal.userId, #collectionId)")
-    public ResponseEntity<?> updateCollectionStatus(@PathVariable Long collectionId, @RequestParam Status status) {
+    public ResponseEntity<?> updateCollectionStatus(@PathVariable Long collectionId,
+                                                    @RequestParam Status status,
+                                                    @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        // Validate that the user can update the collection status
+        if (!customUserDetails.getUserType().equals(UserType.CL_ADMIN) &&
+                !imageService.isCollectionOwnedByUser(customUserDetails.getId(), collectionId)) {
+            return ResponseEntity.status(403).body("You do not have permission to update this collection's status.");
+        }
+
         try {
             imageService.updateCollectionStatus(collectionId, status);
             return ResponseEntity.ok("Collection status updated successfully.");
