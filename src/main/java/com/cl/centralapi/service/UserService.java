@@ -1,6 +1,7 @@
 package com.cl.centralapi.service;
 
 import com.cl.centralapi.enums.UserStatus;
+import com.cl.centralapi.enums.UserType;
 import com.cl.centralapi.exceptions.EmailAlreadyUsedException;
 import com.cl.centralapi.exceptions.UserNotFoundException;
 import com.cl.centralapi.model.User;
@@ -99,9 +100,16 @@ public class UserService {
         }
     }
 
-
     public List<User> getUsersByStatus(UserStatus status) {
         return userRepository.findAllByStatus(status);
+    }
+
+    // Check if the user is an admin or Harbinger
+    public boolean isAdminOrHarbinger(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        return user.getUserType().equals(UserType.CL_ADMIN) || user.getUserType().equals(UserType.HARBINGER);
     }
 
 }
