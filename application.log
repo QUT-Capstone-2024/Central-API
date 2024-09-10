@@ -1,14 +1,22 @@
-2024-09-10T11:21:48.813+10:00  INFO 32660 --- [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2024-09-10T11:21:48.813+10:00  INFO 32660 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2024-09-10T11:21:48.814+10:00  INFO 32660 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
-2024-09-10T11:21:48.833+10:00 DEBUG 32660 --- [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing POST /api/auth/login
-2024-09-10T11:21:48.842+10:00 DEBUG 32660 --- [http-nio-8080-exec-1] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
-2024-09-10T11:21:48.844+10:00 DEBUG 32660 --- [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Secured POST /api/auth/login
-2024-09-10T11:21:48.949+10:00  INFO 32660 --- [http-nio-8080-exec-1] c.c.c.controller.AuthController          : Attempting to authenticate user: steven.green@example.com
-2024-09-10T11:21:49.322+10:00 DEBUG 32660 --- [http-nio-8080-exec-1] o.s.s.a.dao.DaoAuthenticationProvider    : Authenticated user
-2024-09-10T11:21:49.323+10:00  INFO 32660 --- [http-nio-8080-exec-1] c.c.c.controller.AuthController          : Authentication successful for user: steven.green@example.com
-2024-09-10T11:21:49.365+10:00  INFO 32660 --- [http-nio-8080-exec-1] c.c.c.controller.AuthController          : Generated JWT token for user: steven.green@example.com
-2024-09-10T11:22:23.987+10:00 DEBUG 32660 --- [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Securing POST /api/collections
-2024-09-10T11:22:24.040+10:00 DEBUG 32660 --- [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Secured POST /api/collections
-2024-09-10T11:22:44.420+10:00 DEBUG 32660 --- [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Securing GET /api/collections/user/4
-2024-09-10T11:22:44.433+10:00 DEBUG 32660 --- [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Secured GET /api/collections/user/4
+2024-09-10T15:07:51.872+10:00  INFO 35544 --- [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-09-10T15:07:51.873+10:00  INFO 35544 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-09-10T15:07:51.874+10:00  INFO 35544 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2024-09-10T15:07:51.891+10:00 DEBUG 35544 --- [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing GET /api/collections/all
+2024-09-10T15:07:52.162+10:00 DEBUG 35544 --- [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Secured GET /api/collections/all
+2024-09-10T15:07:58.724+10:00 DEBUG 35544 --- [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Securing POST /api/auth/login
+2024-09-10T15:07:58.726+10:00 DEBUG 35544 --- [http-nio-8080-exec-3] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2024-09-10T15:07:58.727+10:00 DEBUG 35544 --- [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Secured POST /api/auth/login
+2024-09-10T15:07:58.776+10:00  INFO 35544 --- [http-nio-8080-exec-3] c.c.c.controller.AuthController          : Attempting to authenticate user: simon.hanmer@example.com
+2024-09-10T15:07:58.967+10:00 DEBUG 35544 --- [http-nio-8080-exec-3] o.s.s.a.dao.DaoAuthenticationProvider    : Authenticated user
+2024-09-10T15:07:58.968+10:00  INFO 35544 --- [http-nio-8080-exec-3] c.c.c.controller.AuthController          : Authentication successful for user: simon.hanmer@example.com
+2024-09-10T15:07:58.992+10:00  INFO 35544 --- [http-nio-8080-exec-3] c.c.c.controller.AuthController          : Generated JWT token for user: simon.hanmer@example.com
+2024-09-10T15:08:10.775+10:00 DEBUG 35544 --- [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Securing GET /api/collections/all
+2024-09-10T15:08:10.787+10:00 DEBUG 35544 --- [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Secured GET /api/collections/all
+2024-09-10T15:08:46.000+10:00 DEBUG 35544 --- [http-nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Securing OPTIONS /api/collections/all
+2024-09-10T15:08:46.013+10:00 DEBUG 35544 --- [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Securing GET /api/collections/all
+2024-09-10T15:08:46.028+10:00 DEBUG 35544 --- [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Secured GET /api/collections/all
+2024-09-10T15:08:46.098+10:00 DEBUG 35544 --- [http-nio-8080-exec-7] o.s.security.web.FilterChainProxy        : Securing GET /api/collections/all
+2024-09-10T15:08:46.115+10:00 DEBUG 35544 --- [http-nio-8080-exec-7] o.s.security.web.FilterChainProxy        : Secured GET /api/collections/all
+2024-09-10T15:08:46.274+10:00 DEBUG 35544 --- [http-nio-8080-exec-9] o.s.security.web.FilterChainProxy        : Securing OPTIONS /api/images/collections/1/images
+2024-09-10T15:08:46.280+10:00 DEBUG 35544 --- [http-nio-8080-exec-8] o.s.security.web.FilterChainProxy        : Securing GET /api/images/collections/1/images
+2024-09-10T15:08:46.296+10:00 DEBUG 35544 --- [http-nio-8080-exec-8] o.s.security.web.FilterChainProxy        : Secured GET /api/images/collections/1/images

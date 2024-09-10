@@ -66,7 +66,8 @@ public class CollectionController {
     })
     @GetMapping("/all")
     public ResponseEntity<List<Collection>> getAllCollections(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        if (!customUserDetails.getUserType().equals(UserType.CL_ADMIN)) {
+        if (!customUserDetails.getUserType().equals(UserType.CL_ADMIN) &&
+            !customUserDetails.getUserType().equals(UserType.HARBINGER)) {
             return ResponseEntity.status(403).build();  // Only allow admins
         }
 
