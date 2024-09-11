@@ -52,6 +52,7 @@ public class ImageController {
                                          @RequestParam("tag") ImageTags tag,
                                          @RequestParam(value = "customTag", required = false) String customTag,
                                          @RequestParam(value = "description", required = false) String description,
+                                         @RequestParam(value = "instanceNumber", required = false, defaultValue = "1") int instanceNumber,
                                          @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         // Validate that the user is allowed to upload
         if (!userService.isAdminOrHarbinger(customUserDetails.getId()) &&
@@ -60,12 +61,13 @@ public class ImageController {
         }
 
         try {
-            URI location = imageService.uploadImage(userId, collectionId, file, tag, customTag, description);
+            URI location = imageService.uploadImage(userId, collectionId, file, tag, customTag, description, instanceNumber);
             return ResponseEntity.created(location).body(Map.of("message", "Image uploaded successfully", "url", location.toString()));
         } catch (IOException e) {
             return ResponseEntity.status(500).body(Map.of("error", "Error uploading and classifying image", "message", e.getMessage()));
         }
     }
+
 
     @Operation(summary = "Get image collections by user ID", description = "This endpoint allows you to retrieve all image collections owned by the authenticated user.")
     @ApiResponses(value = {
