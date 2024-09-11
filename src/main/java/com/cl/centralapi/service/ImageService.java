@@ -48,7 +48,7 @@ public class ImageService {
 
     private final String BUCKET_NAME = "visioncore-image-bucket";
 
-    public URI uploadImage(Long userId, Long collectionId, MultipartFile file, ImageTags tag, String customTag, String description, int instanceNumber) throws IOException {
+    public Map<String, Object> uploadImage(Long userId, Long collectionId, MultipartFile file, ImageTags tag, String customTag, String description, int instanceNumber) throws IOException {
         // Fetch the User object
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
@@ -75,15 +75,18 @@ public class ImageService {
         // Construct the S3 image URL
         String imageUrl = "https://" + BUCKET_NAME + ".s3.amazonaws.com/" + key;
 
-        // Create the new Image object
+        // Log the image URL for debugging
+        System.out.println("Image URL: " + imageUrl);
+
+        // Create the new Image object with initial status as PENDING
         Image image = new Image(
                 imageUrl,  // image URL
                 ZonedDateTime.now(),  // upload time
-                tag,  // image tag
+                tag,  // image tag (user-provided tag)
                 instanceNumber,
                 generateImageId(),  // image ID
                 Status.PENDING,  // image status
-                customTag,  // rejection reason
+                customTag,  // rejection reason (if any)
                 collection
         );
 
@@ -94,11 +97,81 @@ public class ImageService {
         collection.getImages().add(image);
         collectionRepository.save(collection);  // Save the collection with the new image
 
+        // Call the Flask API to classify the image and get the confidence levels
+        ResponseEntity<Map<String, Object>> flaskResponse = sendImageToFlask(imageUrl);
+
+        if (!flaskResponse.getStatusCode().is2xxSuccessful()) {
+            // Handle the case where the Flask API fails to classify the image
+            throw new IOException("Flask API classification failed with status: " + flaskResponse.getStatusCode());
+        }
+
+        // Log the Flask API response
+        System.out.println("Flask API response: " + flaskResponse.getBody());
+
+        // Extract the main response body
+        Map<String, Object> responseBody = flaskResponse.getBody();
+
+        // Extract nested confidence scores
+        @SuppressWarnings("unchecked")
+        Map<String, Object> confidenceScores = (Map<String, Object>) ((Map<String, Object>) responseBody.get("confidence_scores"));
+
+        // Log the confidence scores for debugging
+        System.out.println("Confidence Scores: " + confidenceScores);
+
+        // Initialize variables to track the highest confidence and associated tag
+        String highestConfidenceTag = null;
+        double highestConfidenceScore = 0.0;
+
+        // Iterate over the confidence scores to find the highest score
+        for (Map.Entry<String, Object> entry : confidenceScores.entrySet()) {
+            String classifiedTag = entry.getKey();  // e.g., "Bathroom"
+            Object value = entry.getValue();
+
+            // Check if the value is a number (Double)
+            if (value instanceof Number) {
+                double confidence = ((Number) value).doubleValue();
+
+                // Log the confidence score for debugging
+                System.out.println("Classified Tag: " + classifiedTag + ", Confidence Score: " + confidence);
+
+                // Track the highest confidence score and its tag
+                if (confidence > highestConfidenceScore) {
+                    highestConfidenceScore = confidence;
+                    highestConfidenceTag = classifiedTag;
+                }
+            }
+        }
+
+        // Determine the status of the image based on the highest confidence score
+        if (highestConfidenceScore >= 0.8) {
+            if (highestConfidenceTag.equalsIgnoreCase(tag.toString())) {
+                // The confidence is high and matches the uploaded tag, so approve the image
+                image.setImageStatus(Status.APPROVED);
+            } else {
+                // The confidence is high but does not match the uploaded tag, so update the tag and set the status to pending
+                image.setImageTag(ImageTags.valueOf(highestConfidenceTag.toUpperCase()));  // Update to the correct tag
+                image.setImageStatus(Status.PENDING);
+            }
+        } else {
+            // If no confidence score is above 0.8, reject the image
+            image.setImageStatus(Status.REJECTED);
+            image.setRejectionReason("No confidence score above 0.8");
+        }
+
+        // Save the updated image status and tag
+        imageRepository.save(image);
+
         // Update the collection status based on the new image
         autoUpdateCollectionStatus(collection.getId());
 
-        // Return the URI for the newly uploaded image
-        return URI.create(imageUrl);
+        // Prepare the response to include both the image URL, confidence levels, and status
+        Map<String, Object> response = new HashMap<>();
+        response.put("imageUrl", imageUrl);
+        response.put("confidenceLevels", confidenceScores);
+        response.put("imageStatus", image.getImageStatus());
+
+        // Return the response map
+        return response;
     }
 
 

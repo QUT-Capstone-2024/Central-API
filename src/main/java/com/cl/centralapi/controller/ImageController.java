@@ -21,9 +21,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.net.URI;
-import java.util.List;
 import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/images")
@@ -61,8 +60,8 @@ public class ImageController {
         }
 
         try {
-            URI location = imageService.uploadImage(userId, collectionId, file, tag, customTag, description, instanceNumber);
-            return ResponseEntity.created(location).body(Map.of("message", "Image uploaded successfully", "url", location.toString()));
+            Map<String, Object> response = imageService.uploadImage(userId, collectionId, file, tag, customTag, description, instanceNumber);
+            return ResponseEntity.created(null).body(response);  // Return full response (URL, confidenceLevels, status)
         } catch (IOException e) {
             return ResponseEntity.status(500).body(Map.of("error", "Error uploading and classifying image", "message", e.getMessage()));
         }
@@ -225,4 +224,3 @@ public class ImageController {
         }
     }
 }
-
