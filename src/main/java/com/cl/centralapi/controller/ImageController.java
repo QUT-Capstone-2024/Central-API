@@ -41,6 +41,7 @@ public class ImageController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content) })
     @PostMapping("/upload")
+<<<<<<< Updated upstream
     public ResponseEntity<?> uploadImage(
             @RequestParam("userId") Long userId,
             @RequestParam("address") String address,
@@ -59,10 +60,25 @@ public class ImageController {
 
             // Return the map directly as the response body
             return ResponseEntity.ok(result);
+=======
+    public ResponseEntity<?> uploadImage(@RequestParam("userId") Long userId,
+                                         @RequestParam("collectionId") Long collectionId,
+                                         @RequestParam("file") MultipartFile file,
+                                         @RequestParam("tag") ImageTags tag,
+                                         @RequestParam(value = "customTag", required = false) String customTag,
+                                         @RequestParam(value = "description", required = false) String description) {
+        try {
+            // Call the image service to upload the image and get the confidence levels
+            Map<String, Object> response = imageService.uploadImage(userId, collectionId, file, tag, customTag, description);
+
+            // Return the success response with the image URL and confidence levels
+            return ResponseEntity.status(201).body(response);
+>>>>>>> Stashed changes
         } catch (IOException e) {
             return ResponseEntity.status(500).body("Error uploading and classifying image: " + e.getMessage());
         }
     }
+
 
 
     @Operation(summary = "Get image collections by user ID", description = "This endpoint allows you to retrieve all image collections owned by the authenticated user.")

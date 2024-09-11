@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 2024-09-03T10:47:21.837+10:00  INFO 25396 --- [http-nio-8080-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
 2024-09-03T10:47:21.838+10:00  INFO 25396 --- [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
 2024-09-03T10:47:21.839+10:00  INFO 25396 --- [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
@@ -193,3 +194,65 @@ java.net.ConnectException: Connection refused: connect
 2024-09-03T11:21:42.444+10:00  INFO 25396 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
 2024-09-03T11:21:42.448+10:00  INFO 25396 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
 2024-09-03T11:21:42.452+10:00  INFO 25396 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+=======
+2024-09-11T15:35:52.780+10:00  INFO 18352 --- [main] c.c.c.CentralApiApplicationTests         : Starting CentralApiApplicationTests using Java 17.0.6 with PID 18352 (started by asuka in C:\Users\asuka\Desktop\capstone_project\Central-API)
+2024-09-11T15:35:52.786+10:00 DEBUG 18352 --- [main] c.c.c.CentralApiApplicationTests         : Running with Spring Boot v3.3.2, Spring v6.1.11
+2024-09-11T15:35:52.787+10:00  INFO 18352 --- [main] c.c.c.CentralApiApplicationTests         : No active profile set, falling back to 1 default profile: "default"
+2024-09-11T15:35:54.625+10:00  INFO 18352 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-09-11T15:35:54.783+10:00  INFO 18352 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 120 ms. Found 3 JPA repository interfaces.
+2024-09-11T15:35:55.639+10:00  INFO 18352 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-09-11T15:35:55.778+10:00  INFO 18352 --- [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.2.Final
+2024-09-11T15:35:55.856+10:00  INFO 18352 --- [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2024-09-11T15:35:56.521+10:00  INFO 18352 --- [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-09-11T15:35:56.571+10:00  INFO 18352 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2024-09-11T15:35:56.987+10:00  INFO 18352 --- [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@6e794f53
+2024-09-11T15:35:56.989+10:00  INFO 18352 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2024-09-11T15:35:57.081+10:00  WARN 18352 --- [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-09-11T15:35:58.794+10:00  INFO 18352 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-09-11T15:35:58.922+10:00  INFO 18352 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-09-11T15:35:59.995+10:00  WARN 18352 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2024-09-11T15:36:00.052+10:00  INFO 18352 --- [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2024-09-11T15:36:01.302+10:00 DEBUG 18352 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, CorsFilter, LogoutFilter, JwtRequestFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2024-09-11T15:36:01.858+10:00  INFO 18352 --- [main] c.c.c.CentralApiApplicationTests         : Started CentralApiApplicationTests in 9.443 seconds (process running for 10.699)
+2024-09-11T15:36:02.542+10:00  INFO 18352 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-09-11T15:36:02.545+10:00  INFO 18352 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2024-09-11T15:36:02.555+10:00  INFO 18352 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2024-09-11T15:36:11.529+10:00  INFO 24632 --- [main] c.cl.centralapi.CentralApiApplication    : Starting CentralApiApplication using Java 17.0.6 with PID 24632 (C:\Users\asuka\Desktop\capstone_project\Central-API\target\classes started by asuka in C:\Users\asuka\Desktop\capstone_project\Central-API)
+2024-09-11T15:36:11.531+10:00 DEBUG 24632 --- [main] c.cl.centralapi.CentralApiApplication    : Running with Spring Boot v3.3.2, Spring v6.1.11
+2024-09-11T15:36:11.532+10:00  INFO 24632 --- [main] c.cl.centralapi.CentralApiApplication    : No active profile set, falling back to 1 default profile: "default"
+2024-09-11T15:36:12.205+10:00  INFO 24632 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-09-11T15:36:12.271+10:00  INFO 24632 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 56 ms. Found 3 JPA repository interfaces.
+2024-09-11T15:36:12.911+10:00  INFO 24632 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-09-11T15:36:12.927+10:00  INFO 24632 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-09-11T15:36:12.927+10:00  INFO 24632 --- [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.26]
+2024-09-11T15:36:13.016+10:00  INFO 24632 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-09-11T15:36:13.017+10:00  INFO 24632 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1452 ms
+2024-09-11T15:36:13.364+10:00  INFO 24632 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-09-11T15:36:13.418+10:00  INFO 24632 --- [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.2.Final
+2024-09-11T15:36:13.453+10:00  INFO 24632 --- [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2024-09-11T15:36:13.719+10:00  INFO 24632 --- [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-09-11T15:36:13.745+10:00  INFO 24632 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2024-09-11T15:36:13.874+10:00  INFO 24632 --- [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@3f6f9cef
+2024-09-11T15:36:13.877+10:00  INFO 24632 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2024-09-11T15:36:13.968+10:00  WARN 24632 --- [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-09-11T15:36:14.998+10:00  INFO 24632 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-09-11T15:36:15.135+10:00  INFO 24632 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-09-11T15:36:15.416+10:00 DEBUG 24632 --- [main] c.c.c.security.JwtRequestFilter          : Filter 'jwtRequestFilter' configured for use
+2024-09-11T15:36:15.522+10:00  WARN 24632 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2024-09-11T15:36:15.552+10:00  INFO 24632 --- [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2024-09-11T15:36:16.454+10:00 DEBUG 24632 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, CorsFilter, LogoutFilter, JwtRequestFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2024-09-11T15:36:16.760+10:00  INFO 24632 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2024-09-11T15:36:16.768+10:00  INFO 24632 --- [main] c.cl.centralapi.CentralApiApplication    : Started CentralApiApplication in 5.688 seconds (process running for 6.127)
+2024-09-11T15:36:27.693+10:00  INFO 24632 --- [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-09-11T15:36:27.694+10:00  INFO 24632 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-09-11T15:36:27.695+10:00  INFO 24632 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2024-09-11T15:36:27.711+10:00 DEBUG 24632 --- [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing POST /api/auth/login
+2024-09-11T15:36:27.719+10:00 DEBUG 24632 --- [http-nio-8080-exec-1] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2024-09-11T15:36:27.720+10:00 DEBUG 24632 --- [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Secured POST /api/auth/login
+2024-09-11T15:36:27.797+10:00  INFO 24632 --- [http-nio-8080-exec-1] c.c.c.controller.AuthController          : Attempting to authenticate user: asuka.hirai@example.com
+2024-09-11T15:36:28.069+10:00 DEBUG 24632 --- [http-nio-8080-exec-1] o.s.s.a.dao.DaoAuthenticationProvider    : Authenticated user
+2024-09-11T15:36:28.069+10:00  INFO 24632 --- [http-nio-8080-exec-1] c.c.c.controller.AuthController          : Authentication successful for user: asuka.hirai@example.com
+2024-09-11T15:36:28.108+10:00  INFO 24632 --- [http-nio-8080-exec-1] c.c.c.controller.AuthController          : Generated JWT token for user: asuka.hirai@example.com
+2024-09-11T15:36:48.402+10:00 DEBUG 24632 --- [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Securing POST /api/images/upload
+2024-09-11T15:36:48.449+10:00 DEBUG 24632 --- [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Secured POST /api/images/upload
+>>>>>>> Stashed changes

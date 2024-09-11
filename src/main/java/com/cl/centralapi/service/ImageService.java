@@ -48,11 +48,22 @@ public class ImageService {
 
     private final String BUCKET_NAME = "visioncore-image-bucket";
 
+<<<<<<< Updated upstream
     public Map<String, Object> uploadImageAndClassify(Long userId, String address, MultipartFile file, ImageTags tag, String customTag, String description) throws IOException {
         // Get the user and collection
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
         Collection collection = collectionRepository.findByUserAndPropertyAddress(user, address)
                 .orElseGet(() -> createNewCollection(user, address));
+=======
+    public Map<String, Object> uploadImage(Long userId, Long collectionId, MultipartFile file, ImageTags tag, String customTag, String description) throws IOException {
+        // Fetch the User object
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        // Fetch the existing Collection object by collectionId
+        Collection collection = collectionRepository.findById(collectionId)
+                .orElseThrow(() -> new IllegalArgumentException("Collection not found"));
+>>>>>>> Stashed changes
 
         // Safeguard against null values for the collection ID
         Long collectionId = collection.getId();
@@ -67,15 +78,115 @@ public class ImageService {
 
         String imageUrl = "https://" + BUCKET_NAME + ".s3.ap-southeast-2.amazonaws.com/" + key;
 
+<<<<<<< Updated upstream
         // Call the Flask API to classify the image and get a JSON response as a Map
         ResponseEntity<Map<String, Object>> response = sendImageToFlask(imageUrl);
+=======
+        // Log the image URL for debugging
+        System.out.println("Image URL: " + imageUrl);
+
+        // Create the new Image object with initial status as PENDING
+        Image image = new Image(
+                imageUrl,  // image URL
+                ZonedDateTime.now(),  // upload time
+                tag,  // image tag
+                generateImageId(),  // image ID
+                Status.PENDING,  // image status (initially pending)
+                customTag,  // rejection reason (if any)
+                collection  // associate with the collection
+        );
+>>>>>>> Stashed changes
 
         // Combine the URL and the classification result into a single map
         Map<String, Object> result = new HashMap<>();
         result.put("image_url", imageUrl);
         result.put("classification_result", response.getBody());  // Store the JSON object directly
 
+<<<<<<< Updated upstream
         return result;
+=======
+        // Add the new image to the collection’s images list
+        collection.getImages().add(image);
+        collectionRepository.save(collection);  // Save the collection with the new image
+
+        // Call the Flask API to classify the image and get the confidence levels
+        ResponseEntity<Map<String, Object>> flaskResponse = sendImageToFlask(imageUrl);
+
+        if (!flaskResponse.getStatusCode().is2xxSuccessful()) {
+            // Handle the case where the Flask API fails to classify the image
+            throw new IOException("Flask API classification failed with status: " + flaskResponse.getStatusCode());
+        }
+
+        // Log the Flask API response
+        System.out.println("Flask API response: " + flaskResponse.getBody());
+
+        // Extract the main response body
+        Map<String, Object> responseBody = flaskResponse.getBody();
+
+        // Extract nested confidence scores
+        @SuppressWarnings("unchecked")
+        Map<String, Object> confidenceScores = (Map<String, Object>) ((Map<String, Object>) responseBody.get("confidence_scores"));
+
+        // Log the confidence scores for debugging
+        System.out.println("Confidence Scores: " + confidenceScores);
+
+        // Initialize variables to track the highest confidence and associated tag
+        String highestConfidenceTag = null;
+        double highestConfidenceScore = 0.0;
+
+        // Iterate over the confidence scores to find the highest score
+        for (Map.Entry<String, Object> entry : confidenceScores.entrySet()) {
+            String classifiedTag = entry.getKey();  // e.g., "Bathroom"
+            Object value = entry.getValue();
+
+            // Check if the value is a number (Double)
+            if (value instanceof Number) {
+                double confidence = ((Number) value).doubleValue();
+
+                // Log the confidence score for debugging
+                System.out.println("Classified Tag: " + classifiedTag + ", Confidence Score: " + confidence);
+
+                // Track the highest confidence score and its tag
+                if (confidence > highestConfidenceScore) {
+                    highestConfidenceScore = confidence;
+                    highestConfidenceTag = classifiedTag;
+                }
+            }
+        }
+
+        // If the highest confidence score is above 0.8, check if it matches the uploaded tag
+        if (highestConfidenceScore >= 0.8) {
+            if (highestConfidenceTag.equalsIgnoreCase(tag.toString())) {
+                // The confidence is high and matches the uploaded tag, so approve the image
+                image.setImageStatus(Status.APPROVED);
+            } else {
+                // The confidence is high but does not match the uploaded tag, so update the tag and set the status to pending
+                image.setImageTag(ImageTags.valueOf(highestConfidenceTag.toUpperCase()));  // Update to the correct tag
+                image.setImageStatus(Status.PENDING);
+                image.setRejectionReason("Model confident in another tag, thus updated tag");
+            }
+        } else {
+            System.out.print(highestConfidenceScore);
+            // If no confidence score is above 0.8, the image remains rejected
+            image.setImageStatus(Status.REJECTED);
+            image.setRejectionReason("No confidence score above 0.8");
+        }
+
+        // Save the updated image status and tag
+        imageRepository.save(image);
+
+        // Update the collection status based on the new image
+        autoUpdateCollectionStatus(collection.getId());
+
+        // Prepare the response to include both the image URL, confidence levels, and status
+        Map<String, Object> response = new HashMap<>();
+        response.put("imageUrl", imageUrl);
+        response.put("confidenceLevels", confidenceScores);
+        response.put("imageStatus", image.getImageStatus());
+
+        // Return the response map
+        return response;
+>>>>>>> Stashed changes
     }
 
     private ResponseEntity<Map<String, Object>> sendImageToFlask(String imageUrl) {
