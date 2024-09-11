@@ -3,7 +3,9 @@ package com.cl.centralapi.model;
 import com.cl.centralapi.enums.Status;
 import com.cl.centralapi.enums.ImageTags;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import software.amazon.awssdk.services.s3.endpoints.internal.Value;
 
 import java.time.ZonedDateTime;
 
@@ -16,37 +18,41 @@ public class Image {
     private Long id;
 
     @Column(nullable = false)
-    private String imageUrl; // Matches "imageUrl" in JSON
+    private String imageUrl;
 
     @Column(nullable = false)
-    private ZonedDateTime uploadTime; // Matches "uploadTime" in JSON
+    private ZonedDateTime uploadTime;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ImageTags imageTag; // Matches "imageTag" in JSON
+    private ImageTags imageTag;
+
+    @Column(nullable = false)
+    private int instanceNumber;
 
     @Column(nullable = false, unique = true)
-    private String imageId; // Matches "imageId" in JSON
+    private String imageId;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Status imageStatus; // Matches "imageStatus" in JSON
+    private Status imageStatus;
 
-    @Column(length = 500) // Adjust length as needed
-    private String rejectionReason; // Matches "rejectionReason" in JSON
+    @Column(length = 500)
+    private String rejectionReason;
 
     @ManyToOne
     @JoinColumn(name = "collection_id", nullable = false)
     @JsonBackReference
-    private Collection collection; // Relationship to Collection
+    private Collection collection;
 
     // Constructors
     public Image() {}
 
-    public Image(String imageUrl, ZonedDateTime uploadTime, ImageTags imageTag, String imageId, Status imageStatus, String rejectionReason, Collection collection) {
+    public Image(String imageUrl, ZonedDateTime uploadTime, ImageTags imageTag, int instanceNumber, String imageId, Status imageStatus, String rejectionReason, Collection collection) {
         this.imageUrl = imageUrl;
         this.uploadTime = uploadTime;
         this.imageTag = imageTag;
+        this.instanceNumber = instanceNumber;
         this.imageId = imageId;
         this.imageStatus = imageStatus != null ? imageStatus : Status.PENDING;
         this.rejectionReason = rejectionReason;
@@ -117,4 +123,8 @@ public class Image {
     public void setCollection(Collection collection) {
         this.collection = collection;
     }
+
+    public int getInstanceNumber() { return instanceNumber; }
+
+    public void setInstanceNumber(int instanceNumber) { this.instanceNumber = instanceNumber; }
 }

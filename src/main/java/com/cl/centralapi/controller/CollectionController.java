@@ -1,7 +1,11 @@
 package com.cl.centralapi.controller;
 
+import com.cl.centralapi.enums.UserType;
 import com.cl.centralapi.model.Collection;
+import com.cl.centralapi.model.User;
+import com.cl.centralapi.security.CustomUserDetails;
 import com.cl.centralapi.service.CollectionService;
+import com.cl.centralapi.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -10,10 +14,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -24,82 +31,143 @@ public class CollectionController {
     @Autowired
     private CollectionService collectionService;
 
+    @Autowired
+    private UserService userService;
+
+    // Get collections for a specific user
+    @Operation(summary = "Get collections by user ID", description = "Retrieve all collections for a specific user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Collections retrieved successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Collection.class))),
+            @ApiResponse(responseCode = "404", description = "User not found", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)
+    })
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Collection>> getCollectionsByUserId(@PathVariable Long userId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        if (!userService.isAdminOrHarbinger(customUserDetails.getId()) && !customUserDetails.getId().equals(userId)) {
+            return ResponseEntity.status(403).body(Collections.emptyList());
+        }
+
+        List<Collection> collections = collectionService.findCollectionsByUserId(userId);
+        if (collections.isEmpty()) {
+            return ResponseEntity.status(404).body(Collections.emptyList());
+        }
+        return ResponseEntity.ok(collections);
+    }
+
+    // Get all collections (Admin only)
+    @Operation(summary = "Get all collections", description = "Retrieve all collections, accessible only by admin users")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Collections retrieved successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Collection.class))),
+            @ApiResponse(responseCode = "403", description = "Unauthorized", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)
+    })
+    @GetMapping("/all")
+    public ResponseEntity<List<Collection>> getAllCollections(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        if (!userService.isAdminOrHarbinger(customUserDetails.getId())) {
+            return ResponseEntity.status(403).build();
+        }
+
+        List<Collection> collections = collectionService.findAllCollections();
+        return ResponseEntity.ok(collections);
+    }
+
+    // Create a new collection
     @Operation(summary = "Create a new collection", description = "This endpoint allows you to create a new collection in the system.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Collection created successfully",
-                    content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Collection.class))}),
-            @ApiResponse(responseCode = "400", description = "Invalid input",
-                    content = @Content),
-            @ApiResponse(responseCode = "500", description = "Internal server error",
-                    content = @Content)
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Collection.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid input", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)
     })
     @PostMapping
-    public ResponseEntity<?> createCollection(@RequestBody Collection collection) {
+    public ResponseEntity<Collection> createCollection(@RequestBody Collection collection,
+                                                       @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        Long userId = customUserDetails.getId();
+        User user = userService.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        collection.setUser(user);  // Link the collection to the authenticated user
         Collection savedCollection = collectionService.saveCollection(collection);
-        return ResponseEntity.ok(Collections.singletonMap("message", "Collection created successfully"));
+
+        return ResponseEntity.status(201).body(savedCollection);
     }
 
+    // Get collection by ID
     @Operation(summary = "Get collection by ID", description = "This endpoint allows you to retrieve a collection by its ID.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Collection retrieved successfully",
-                    content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Collection.class))}),
-            @ApiResponse(responseCode = "404", description = "Collection not found",
-                    content = @Content),
-            @ApiResponse(responseCode = "500", description = "Internal server error",
-                    content = @Content)
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Collection.class))),
+            @ApiResponse(responseCode = "404", description = "Collection not found", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)
     })
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('ROLE_INTERNAL') and principal.userType == T(com.cl.centralapi.enums.UserType).CL_ADMIN")
-    public ResponseEntity<Collection> getCollectionById(@PathVariable Long id) {
+    public ResponseEntity<Collection> getCollectionById(@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         Optional<Collection> collection = collectionService.findById(id);
-        return collection.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+
+        if (collection.isPresent()) {
+            Collection col = collection.get();
+            if (!userService.isAdminOrHarbinger(customUserDetails.getId()) &&
+                    !collectionService.isCollectionOwnedByUser(customUserDetails.getId(), id)) {
+                return ResponseEntity.status(403).build();
+            }
+            return ResponseEntity.ok(col);
+        }
+
+        return ResponseEntity.notFound().build();
     }
 
+    // Update an existing collection
     @Operation(summary = "Update collection", description = "This endpoint allows you to update an existing collection.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Collection updated successfully",
-                    content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Collection.class))}),
-            @ApiResponse(responseCode = "400", description = "Invalid input",
-                    content = @Content),
-            @ApiResponse(responseCode = "404", description = "Collection not found",
-                    content = @Content),
-            @ApiResponse(responseCode = "500", description = "Internal server error",
-                    content = @Content)
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Collection.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid input", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Collection not found", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)
     })
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('ROLE_INTERNAL') and principal.userType == T(com.cl.centralapi.enums.UserType).CL_ADMIN")
-    public ResponseEntity<?> updateCollection(@PathVariable Long id, @RequestBody Collection updatedCollection) {
-        try {
+    public ResponseEntity<?> updateCollection(@PathVariable Long id, @RequestBody Collection updatedCollection, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        Optional<Collection> collection = collectionService.findById(id);
+
+        if (collection.isPresent()) {
+            Collection col = collection.get();
+            if (!userService.isAdminOrHarbinger(customUserDetails.getId()) &&
+                    !collectionService.isCollectionOwnedByUser(customUserDetails.getId(), id)) {
+                return ResponseEntity.status(403).body("You do not have permission to update this collection.");
+            }
+
             Collection savedCollection = collectionService.updateCollection(id, updatedCollection);
             return ResponseEntity.ok(savedCollection);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(404).body("Collection not found: " + e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error updating collection: " + e.getMessage());
+        } else {
+            return ResponseEntity.status(404).body("Collection not found");
         }
     }
 
+    // Delete collection by ID
     @Operation(summary = "Delete collection", description = "This endpoint allows you to delete a collection by its ID.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Collection deleted successfully",
-                    content = @Content),
-            @ApiResponse(responseCode = "404", description = "Collection not found",
-                    content = @Content),
-            @ApiResponse(responseCode = "500", description = "Internal server error",
-                    content = @Content)
+            @ApiResponse(responseCode = "204", description = "Collection deleted successfully", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Collection not found", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)
     })
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('ROLE_INTERNAL') and principal.userType == T(com.cl.centralapi.enums.UserType).CL_ADMIN")
-    public ResponseEntity<?> deleteCollection(@PathVariable Long id) {
-        try {
+    public ResponseEntity<?> deleteCollection(@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        Optional<Collection> collection = collectionService.findById(id);
+
+        if (collection.isPresent()) {
+            Collection col = collection.get();
+            if (!userService.isAdminOrHarbinger(customUserDetails.getId()) &&
+                    !collectionService.isCollectionOwnedByUser(customUserDetails.getId(), id)) {
+                return ResponseEntity.status(403).body("You do not have permission to delete this collection.");
+            }
+
             collectionService.deleteCollectionById(id);
-            return ResponseEntity.status(200).body("Collection deleted successfully");
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error deleting collection: " + e.getMessage());
+            return ResponseEntity.status(204).build();
+        } else {
+            return ResponseEntity.status(404).body("Collection not found");
         }
     }
 }
+

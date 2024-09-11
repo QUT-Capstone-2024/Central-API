@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class JwtUtil {
@@ -19,11 +21,18 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
+    // Overloaded method: Only requires username
     public String generateToken(String username) {
+        return generateToken(username, new HashMap<>());  // Calls the full method with empty claims
+    }
+
+    // Main method: Accepts username and extra claims
+    public String generateToken(String username, Map<String, Object> extraClaims) {
         return Jwts.builder()
+                .setClaims(extraClaims) // Include additional claims (like userType) here
                 .setSubject(username)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hour
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hour expiration
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }

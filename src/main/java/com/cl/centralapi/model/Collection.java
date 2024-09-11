@@ -9,7 +9,6 @@ import java.util.List;
 @Entity
 public class Collection {
 
-    // Base properties
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,16 +19,11 @@ public class Collection {
     @Column(nullable = false)
     private String propertyAddress;
 
-    private List<String> imageUrls;
-
     @Column(nullable = false)
     private String collectionId;
 
     @Column(nullable = false)
     private Integer propertySize;
-
-    @Column(nullable = false)
-    private Long propertyOwnerId;
 
     @Column(nullable = false)
     private Integer bedrooms;
@@ -51,24 +45,27 @@ public class Collection {
     @JsonBackReference
     private User user;
 
+    @OneToMany(mappedBy = "collection", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Image> images;
+
     // Constructors
     public Collection() {}
 
-    public Collection(Long id, String propertyDescription, String propertyAddress, List imageUrls, String collectionId,
+    public Collection(Long id, String propertyDescription, String propertyAddress, String collectionId,
                       Integer propertySize, Long propertyOwnerId, Integer bedrooms, Integer bathrooms,
-                      Integer parkingSpaces, Status approvalStatus, String propertyType) {
+                      Integer parkingSpaces, Status approvalStatus, String propertyType, List<Image> images) {
         this.id = id;
         this.propertyDescription = propertyDescription;
         this.propertyAddress = propertyAddress;
-        this.imageUrls = imageUrls;
         this.collectionId = collectionId;
         this.propertySize = propertySize;
-        this.propertyOwnerId = propertyOwnerId;
         this.bedrooms = bedrooms;
         this.bathrooms = bathrooms;
         this.parkingSpaces = parkingSpaces;
         this.approvalStatus = approvalStatus != null ? approvalStatus : Status.PENDING;
         this.propertyType = propertyType;
+        this.images = images;
     }
 
     // Getters and Setters
@@ -96,14 +93,6 @@ public class Collection {
         this.propertyAddress = propertyAddress;
     }
 
-    public List<String> getImageUrls() {
-        return imageUrls;
-    }
-
-    public void setImageUrls(List imageUrls) {
-        this.imageUrls = imageUrls;
-    }
-
     public String getCollectionId() {
         return collectionId;
     }
@@ -118,14 +107,6 @@ public class Collection {
 
     public void setPropertySize(Integer propertySize) {
         this.propertySize = propertySize;
-    }
-
-    public Long getPropertyOwnerId() {
-        return propertyOwnerId;
-    }
-
-    public void setPropertyOwnerId(Long propertyOwnerId) {
-        this.propertyOwnerId = propertyOwnerId;
     }
 
     public Integer getBedrooms() {
@@ -174,5 +155,13 @@ public class Collection {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public List<Image> getImages() {
+        return images;
+    }
+
+    public void setImages(List<Image> images) {
+        this.images = images;
     }
 }

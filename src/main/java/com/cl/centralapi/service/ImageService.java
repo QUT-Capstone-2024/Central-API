@@ -14,8 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
-import java.util.Map;
-import java.util.HashMap;
+
+import java.util.*;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,8 +29,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import java.io.IOException;
 import java.net.URI;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ImageService {
@@ -48,14 +48,12 @@ public class ImageService {
 
     private final String BUCKET_NAME = "visioncore-image-bucket";
 
-<<<<<<< Updated upstream
-    public Map<String, Object> uploadImageAndClassify(Long userId, String address, MultipartFile file, ImageTags tag, String customTag, String description) throws IOException {
+
+    public Map<String, Object> uploadImageAndClassify(Long userId, String address, MultipartFile file, ImageTags tag, String customTag, String description, int instanceNumber) throws IOException {
         // Get the user and collection
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
         Collection collection = collectionRepository.findByUserAndPropertyAddress(user, address)
                 .orElseGet(() -> createNewCollection(user, address));
-=======
-    public Map<String, Object> uploadImage(Long userId, Long collectionId, MultipartFile file, ImageTags tag, String customTag, String description) throws IOException {
         // Fetch the User object
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
@@ -63,10 +61,13 @@ public class ImageService {
         // Fetch the existing Collection object by collectionId
         Collection collection = collectionRepository.findById(collectionId)
                 .orElseThrow(() -> new IllegalArgumentException("Collection not found"));
->>>>>>> Stashed changes
+
+        // Validate the instance number to ensure it matches the property specs (e.g., number of bathrooms)
+        if (!validateInstanceNumber(collection, tag, instanceNumber)) {
+            throw new IllegalArgumentException("Invalid instance number for the given tag.");
+        }
 
         // Safeguard against null values for the collection ID
-        Long collectionId = collection.getId();
         String key = (collectionId != null ? collectionId.toString() : "unknown") + "/" + file.getOriginalFilename();
 
         // Upload the image to S3
@@ -76,12 +77,37 @@ public class ImageService {
                         .build(),
                 software.amazon.awssdk.core.sync.RequestBody.fromBytes(file.getBytes()));
 
-        String imageUrl = "https://" + BUCKET_NAME + ".s3.ap-southeast-2.amazonaws.com/" + key;
+        // Construct the S3 image URL
+        String imageUrl = "https://" + BUCKET_NAME + ".s3.amazonaws.com/" + key;
 
-<<<<<<< Updated upstream
-        // Call the Flask API to classify the image and get a JSON response as a Map
+        // Create the new Image object
+        Image image = new Image(
+                imageUrl,  // image URL
+                ZonedDateTime.now(),  // upload time
+                tag,  // image tag
+                instanceNumber,
+                generateImageId(),  // image ID
+                Status.PENDING,  // image status
+                customTag,  // rejection reason
+                collection
+        );
+
+        // Save the new image to the repository
+        imageRepository.save(image);
+
+        // Add the new image to the collection’s images list
+        collection.getImages().add(image);
+        collectionRepository.save(collection);  // Save the collection with the new image
+
+        // Update the collection status based on the new image
+        autoUpdateCollectionStatus(collection.getId());
+
+        // Return the URI for the newly uploaded image
+        return URI.create(imageUrl);
+    }
+
+
         ResponseEntity<Map<String, Object>> response = sendImageToFlask(imageUrl);
-=======
         // Log the image URL for debugging
         System.out.println("Image URL: " + imageUrl);
 
@@ -95,16 +121,15 @@ public class ImageService {
                 customTag,  // rejection reason (if any)
                 collection  // associate with the collection
         );
->>>>>>> Stashed changes
 
-        // Combine the URL and the classification result into a single map
-        Map<String, Object> result = new HashMap<>();
-        result.put("image_url", imageUrl);
-        result.put("classification_result", response.getBody());  // Store the JSON object directly
+    private boolean validateInstanceNumber(Collection collection, ImageTags tag, int instanceNumber) {
+        System.out.println("Collection Bathrooms: " + collection.getBathrooms());
+        System.out.println("Collection Bedrooms: " + collection.getBedrooms());
+        System.out.println("Instance Number: " + instanceNumber);
+        System.out.println("Tag: " + tag);
 
-<<<<<<< Updated upstream
         return result;
-=======
+
         // Add the new image to the collection’s images list
         collection.getImages().add(image);
         collectionRepository.save(collection);  // Save the collection with the new image
@@ -186,8 +211,20 @@ public class ImageService {
 
         // Return the response map
         return response;
->>>>>>> Stashed changes
+
+        // For example, if the collection has 3 bathrooms, instanceNumber for bathrooms must be between 1 and 3.
+        switch (tag) {
+            case BATHROOM:
+                return instanceNumber >= 1 && instanceNumber <= collection.getBathrooms();
+            case BEDROOM:
+                return instanceNumber >= 1 && instanceNumber <= collection.getBedrooms();
+            default:
+                return true;
+        }
     }
+
+
+
 
     private ResponseEntity<Map<String, Object>> sendImageToFlask(String imageUrl) {
         String flaskApiUrl = "http://localhost:5000/api/image/classify";
@@ -220,7 +257,6 @@ public class ImageService {
                 null, // id (will be auto-generated)
                 "Default Description", // propertyDescription
                 propertyAddress, // propertyAddress
-                new ArrayList<>(), // imageUrls (default empty list)
                 "default-collection-id", // collectionId (default or generated)
                 0, // propertySize (default)
                 user.getId(), // propertyOwnerId
@@ -228,17 +264,16 @@ public class ImageService {
                 0, // bathrooms (default)
                 0, // parkingSpaces (default)
                 Status.PENDING, // approvalStatus (default)
-                "unknown" // propertyType (default)
+                "unknown", // propertyType (default)
+                new ArrayList<>() // image list (initially empty)
         );
         collection.setUser(user); // Ensure user is associated with the collection
         return collectionRepository.save(collection);
     }
 
-
     public List<Collection> getCollectionsByUserId(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        return collectionRepository.findByUser(user);
+        // No need to fetch the user entity, just pass the userId directly
+        return collectionRepository.findByUserId(userId);
     }
 
     public Collection getCollectionById(Long collectionId) {
@@ -247,27 +282,33 @@ public class ImageService {
     }
 
     public List<Image> getImagesByCollectionId(Long collectionId) {
-        // Ensure the collection exists
         Collection collection = collectionRepository.findById(collectionId)
                 .orElseThrow(() -> new IllegalArgumentException("Collection not found"));
 
-        // Fetch and return all images for this collection
-        return imageRepository.findByCollectionId(collectionId);
+        // Fetch images and sort them by their instance_number
+        return imageRepository.findByCollectionId(collectionId)
+                .stream()
+                .sorted(Comparator.comparingInt(Image::getInstanceNumber))  // Sort by instance number
+                .collect(Collectors.toList());
     }
+
 
     public boolean isCollectionOwnedByUser(Long userId, Long collectionId) {
         Collection collection = collectionRepository.findById(collectionId)
                 .orElseThrow(() -> new IllegalArgumentException("Collection not found"));
 
-        Long collectionOwnerId = collection.getPropertyOwnerId();
+        Long collectionOwnerId = collection.getId();
         return collectionOwnerId != null && collectionOwnerId.equals(userId);
     }
 
     public boolean isUserAdmin(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        return user.getUserType().equals(UserType.CL_ADMIN);
+
+        // Check if the user is either CL_ADMIN or HARBINGER
+        return user.getUserType().equals(UserType.CL_ADMIN) || user.getUserType().equals(UserType.HARBINGER);
     }
+
 
     public void deleteCollectionById(Long collectionId) {
         Collection collection = collectionRepository.findById(collectionId)
@@ -284,6 +325,10 @@ public class ImageService {
             throw new IllegalArgumentException("Image is not owned by collection");
         }
         imageRepository.delete(image);
+
+        // Remove the image from the collection's images list
+        collection.getImages().remove(image);
+        collectionRepository.save(collection); // Save the updated collection
 
         // Recalculate collection status
         autoUpdateCollectionStatus(collection.getId());
@@ -330,7 +375,7 @@ public class ImageService {
                 .orElseThrow(() -> new IllegalArgumentException("Collection not found"));
 
         // Find all images associated with the collection
-        List<Image> images = imageRepository.findByCollectionId(collectionId);
+        List<Image> images = collection.getImages(); // Get the images directly from the collection
 
         // Counters
         double imageCount = images.size();
