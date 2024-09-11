@@ -14,8 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
-import java.util.Map;
-import java.util.HashMap;
+
+import java.util.*;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,8 +29,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import java.io.IOException;
 import java.net.URI;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ImageService {
@@ -48,7 +48,7 @@ public class ImageService {
 
     private final String BUCKET_NAME = "visioncore-image-bucket";
 
-    public URI uploadImage(Long userId, Long collectionId, MultipartFile file, ImageTags tag, String customTag, String description) throws IOException {
+    public URI uploadImage(Long userId, Long collectionId, MultipartFile file, ImageTags tag, String customTag, String description, int instanceNumber) throws IOException {
         // Fetch the User object
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
@@ -56,6 +56,11 @@ public class ImageService {
         // Fetch the existing Collection object by collectionId
         Collection collection = collectionRepository.findById(collectionId)
                 .orElseThrow(() -> new IllegalArgumentException("Collection not found"));
+
+        // Validate the instance number to ensure it matches the property specs (e.g., number of bathrooms)
+        if (!validateInstanceNumber(collection, tag, instanceNumber)) {
+            throw new IllegalArgumentException("Invalid instance number for the given tag.");
+        }
 
         // Safeguard against null values for the collection ID
         String key = (collectionId != null ? collectionId.toString() : "unknown") + "/" + file.getOriginalFilename();
@@ -75,10 +80,11 @@ public class ImageService {
                 imageUrl,  // image URL
                 ZonedDateTime.now(),  // upload time
                 tag,  // image tag
+                instanceNumber,
                 generateImageId(),  // image ID
                 Status.PENDING,  // image status
                 customTag,  // rejection reason
-                collection  // associate with the collection
+                collection
         );
 
         // Save the new image to the repository
@@ -94,6 +100,26 @@ public class ImageService {
         // Return the URI for the newly uploaded image
         return URI.create(imageUrl);
     }
+
+
+
+    private boolean validateInstanceNumber(Collection collection, ImageTags tag, int instanceNumber) {
+        System.out.println("Collection Bathrooms: " + collection.getBathrooms());
+        System.out.println("Collection Bedrooms: " + collection.getBedrooms());
+        System.out.println("Instance Number: " + instanceNumber);
+        System.out.println("Tag: " + tag);
+
+        // For example, if the collection has 3 bathrooms, instanceNumber for bathrooms must be between 1 and 3.
+        switch (tag) {
+            case BATHROOM:
+                return instanceNumber >= 1 && instanceNumber <= collection.getBathrooms();
+            case BEDROOM:
+                return instanceNumber >= 1 && instanceNumber <= collection.getBedrooms();
+            default:
+                return true;
+        }
+    }
+
 
 
 
@@ -153,13 +179,16 @@ public class ImageService {
     }
 
     public List<Image> getImagesByCollectionId(Long collectionId) {
-        // Ensure the collection exists
         Collection collection = collectionRepository.findById(collectionId)
                 .orElseThrow(() -> new IllegalArgumentException("Collection not found"));
 
-        // Fetch and return all images for this collection
-        return collection.getImages(); // Return the images directly from the collection
+        // Fetch images and sort them by their instance_number
+        return imageRepository.findByCollectionId(collectionId)
+                .stream()
+                .sorted(Comparator.comparingInt(Image::getInstanceNumber))  // Sort by instance number
+                .collect(Collectors.toList());
     }
+
 
     public boolean isCollectionOwnedByUser(Long userId, Long collectionId) {
         Collection collection = collectionRepository.findById(collectionId)
