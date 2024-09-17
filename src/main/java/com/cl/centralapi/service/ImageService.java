@@ -48,7 +48,7 @@ public class ImageService {
 
     private final String BUCKET_NAME = "visioncore-image-bucket";
 
-    public Map<String, Object> uploadImage(Long userId, Long collectionId, MultipartFile file, ImageTags tag, String customTag, String description, int instanceNumber) throws IOException {
+    public Map<String, Object> uploadImage(Long userId, Long collectionId, MultipartFile file, ImageTags tag, String customTag, String description, String descriptionSummary, int instanceNumber) throws IOException {
         // Fetch the User object
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
@@ -89,6 +89,9 @@ public class ImageService {
                 customTag,  // rejection reason (if any)
                 collection
         );
+
+        image.setDescription(description);
+        image.setDescriptionSummary(null);
 
         // Save the new image to the repository
         imageRepository.save(image);
@@ -174,8 +177,6 @@ public class ImageService {
         return response;
     }
 
-
-
     private boolean validateInstanceNumber(Collection collection, ImageTags tag, int instanceNumber) {
         System.out.println("Collection Bathrooms: " + collection.getBathrooms());
         System.out.println("Collection Bedrooms: " + collection.getBedrooms());
@@ -192,9 +193,6 @@ public class ImageService {
                 return true;
         }
     }
-
-
-
 
     private ResponseEntity<Map<String, Object>> sendImageToFlask(String imageUrl) {
         String flaskApiUrl = "http://localhost:5000/api/image/classify";
@@ -322,6 +320,12 @@ public class ImageService {
         }
         if (updatedImage.getImageStatus() != null) {
             existingImage.setImageStatus(updatedImage.getImageStatus());
+        }
+        if (updatedImage.getDescription() != null) {
+            existingImage.setDescription(updatedImage.getDescription());
+        }
+        if (updatedImage.getDescriptionSummary() != null) {
+            existingImage.setDescriptionSummary(updatedImage.getDescriptionSummary());
         }
 
         imageRepository.save(existingImage);

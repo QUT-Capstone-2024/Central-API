@@ -40,6 +40,12 @@ public class Image {
     @Column(length = 500)
     private String rejectionReason;
 
+    @Column(length = 500)
+    private String description;
+
+    @Column(length = 500)
+    private String descriptionSummary;
+
     @ManyToOne
     @JoinColumn(name = "collection_id", nullable = false)
     @JsonBackReference
@@ -127,4 +133,21 @@ public class Image {
     public int getInstanceNumber() { return instanceNumber; }
 
     public void setInstanceNumber(int instanceNumber) { this.instanceNumber = instanceNumber; }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getDescriptionSummary() {
+        return descriptionSummary;
+    }
+
+    public void setDescriptionSummary(String descriptionSummary) {
+        this.descriptionSummary = descriptionSummary;
+    }
+
 }

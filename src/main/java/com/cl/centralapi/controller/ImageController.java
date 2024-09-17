@@ -2,7 +2,6 @@ package com.cl.centralapi.controller;
 
 import com.cl.centralapi.enums.ImageTags;
 import com.cl.centralapi.enums.Status;
-import com.cl.centralapi.enums.UserType;
 import com.cl.centralapi.model.Collection;
 import com.cl.centralapi.model.Image;
 import com.cl.centralapi.security.CustomUserDetails;
@@ -51,6 +50,7 @@ public class ImageController {
                                          @RequestParam("tag") ImageTags tag,
                                          @RequestParam(value = "customTag", required = false) String customTag,
                                          @RequestParam(value = "description", required = false) String description,
+                                         @RequestParam(value = "descriptionSummary", required = false) String descriptionSummary,
                                          @RequestParam(value = "instanceNumber", required = false, defaultValue = "1") int instanceNumber,
                                          @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         // Validate that the user is allowed to upload
@@ -60,7 +60,7 @@ public class ImageController {
         }
 
         try {
-            Map<String, Object> response = imageService.uploadImage(userId, collectionId, file, tag, customTag, description, instanceNumber);
+            Map<String, Object> response = imageService.uploadImage(userId, collectionId, file, tag, customTag, description, descriptionSummary, instanceNumber);
             return ResponseEntity.created(null).body(response);  // Return full response (URL, confidenceLevels, status)
         } catch (IOException e) {
             return ResponseEntity.status(500).body(Map.of("error", "Error uploading and classifying image", "message", e.getMessage()));
