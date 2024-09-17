@@ -16,7 +16,7 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.util.*;
-
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -85,7 +85,7 @@ public class ImageService {
                 tag,  // image tag (user-provided tag)
                 instanceNumber,
                 generateImageId(),  // image ID
-                Status.PENDING,  // image status
+                Status.UNTAGGED,  // image status
                 customTag,  // rejection reason (if any)
                 collection
         );
@@ -100,81 +100,59 @@ public class ImageService {
         collection.getImages().add(image);
         collectionRepository.save(collection);  // Save the collection with the new image
 
-        // Call the Flask API to classify the image and get the confidence levels
-        ResponseEntity<Map<String, Object>> flaskResponse = sendImageToFlask(imageUrl);
-
-        if (!flaskResponse.getStatusCode().is2xxSuccessful()) {
-            // Handle the case where the Flask API fails to classify the image
-            throw new IOException("Flask API classification failed with status: " + flaskResponse.getStatusCode());
-        }
-
-        // Log the Flask API response
-        System.out.println("Flask API response: " + flaskResponse.getBody());
-
-        // Extract the main response body
-        Map<String, Object> responseBody = flaskResponse.getBody();
-
-        // Extract nested confidence scores
-        @SuppressWarnings("unchecked")
-        Map<String, Object> confidenceScores = (Map<String, Object>) ((Map<String, Object>) responseBody.get("confidence_scores"));
-
-        // Log the confidence scores for debugging
-        System.out.println("Confidence Scores: " + confidenceScores);
-
-        // Initialize variables to track the highest confidence and associated tag
-        String highestConfidenceTag = null;
-        double highestConfidenceScore = 0.0;
-
-        // Iterate over the confidence scores to find the highest score
-        for (Map.Entry<String, Object> entry : confidenceScores.entrySet()) {
-            String classifiedTag = entry.getKey();  // e.g., "Bathroom"
-            Object value = entry.getValue();
-
-            // Check if the value is a number (Double)
-            if (value instanceof Number) {
-                double confidence = ((Number) value).doubleValue();
-
-                // Log the confidence score for debugging
-                System.out.println("Classified Tag: " + classifiedTag + ", Confidence Score: " + confidence);
-
-                // Track the highest confidence score and its tag
-                if (confidence > highestConfidenceScore) {
-                    highestConfidenceScore = confidence;
-                    highestConfidenceTag = classifiedTag;
-                }
-            }
-        }
-
-        // Determine the status of the image based on the highest confidence score
-        if (highestConfidenceScore >= 0.8) {
-            if (highestConfidenceTag.equalsIgnoreCase(tag.toString())) {
-                // The confidence is high and matches the uploaded tag, so approve the image
-                image.setImageStatus(Status.APPROVED);
-            } else {
-                // The confidence is high but does not match the uploaded tag, so update the tag and set the status to pending
-                image.setImageTag(ImageTags.valueOf(highestConfidenceTag.toUpperCase()));  // Update to the correct tag
-                image.setImageStatus(Status.PENDING);
-            }
-        } else {
-            // If no confidence score is above 0.8, reject the image
-            image.setImageStatus(Status.REJECTED);
-            image.setRejectionReason("No confidence score above 0.8");
-        }
-
-        // Save the updated image status and tag
-        imageRepository.save(image);
-
-        // Update the collection status based on the new image
-        autoUpdateCollectionStatus(collection.getId());
-
         // Prepare the response to include both the image URL, confidence levels, and status
         Map<String, Object> response = new HashMap<>();
         response.put("imageUrl", imageUrl);
-        response.put("confidenceLevels", confidenceScores);
         response.put("imageStatus", image.getImageStatus());
 
         // Return the response map
         return response;
+    }
+
+    @Scheduled(fixedDelay = 10000)  // Every 10 seconds
+    public void classifyUntaggedImages() {
+        // Fetch all untagged images from the repository
+        List<Image> untaggedImages = imageRepository.findByImageStatus(Status.UNTAGGED);
+
+        // Classify each untagged image
+        untaggedImages.forEach(this::classifyImage);
+    }
+
+    private void classifyImage(Image image) {
+        try {
+            ResponseEntity<Map<String, Object>> response = sendImageToFlask(image.getImageUrl());
+            if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+                updateImageStatusBasedOnApiResponse(image, response.getBody());
+                imageRepository.save(image);
+            }
+        } catch (Exception e) {
+            System.err.println("Failed to classify image: " + e.getMessage());
+        }
+    }
+
+    private void updateImageStatusBasedOnApiResponse(Image image, Map<String, Object> apiResponse) {
+        Map<String, Double> confidenceScores = (Map<String, Double>) apiResponse.get("confidence_scores");
+        String highestConfidenceTag = null;
+        double highestConfidenceScore = 0.0;
+
+        for (Map.Entry<String, Double> entry : confidenceScores.entrySet()) {
+            if (entry.getValue() > highestConfidenceScore) {
+                highestConfidenceScore = entry.getValue();
+                highestConfidenceTag = entry.getKey();
+            }
+        }
+
+        if (highestConfidenceScore >= 0.8) {
+            if (highestConfidenceTag.equalsIgnoreCase(image.getImageTag().toString())) {
+                image.setImageStatus(Status.APPROVED);
+            } else {
+                image.setImageTag(ImageTags.valueOf(highestConfidenceTag.toUpperCase()));
+                image.setImageStatus(Status.PENDING);
+            }
+        } else {
+            image.setImageStatus(Status.REJECTED);
+            image.setRejectionReason("Low confidence score");
+        }
     }
 
     private boolean validateInstanceNumber(Collection collection, ImageTags tag, int instanceNumber) {
