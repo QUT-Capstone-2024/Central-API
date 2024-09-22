@@ -12,4 +12,6 @@ public interface CollectionRepository extends JpaRepository<Collection, Long> {
     List<Collection> findByUserId(Long userId);
 
     Optional<Collection> findByUserIdAndPropertyAddress(Long userId, String propertyAddress);
+
+    List<Collection> findByPropertyAddressContainingIgnoreCase(String addressQuery);
 }
