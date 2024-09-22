@@ -55,7 +55,7 @@ public class ImageController {
                                          @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         // Validate that the user is allowed to upload
         if (!userService.isAdminOrHarbinger(customUserDetails.getId()) &&
-                !imageService.isCollectionOwnedByUser(customUserDetails.getId(), collectionId)) {
+                imageService.isCollectionOwnedByUser(customUserDetails.getId(), collectionId)) {
             return ResponseEntity.status(403).body("You do not have permission to upload images to this collection.");
         }
 
@@ -82,7 +82,7 @@ public class ImageController {
                                                     @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         // Validate that the user can access collections
         if (!userService.isAdminOrHarbinger(customUserDetails.getId()) &&
-                !imageService.isCollectionOwnedByUser(customUserDetails.getId(), userId)) {
+                imageService.isCollectionOwnedByUser(customUserDetails.getId(), userId)) {
             return ResponseEntity.status(403).body("You do not have permission to access these collections.");
         }
 
@@ -104,7 +104,7 @@ public class ImageController {
                                                      @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         // Validate access to the collection
         if (!userService.isAdminOrHarbinger(customUserDetails.getId()) &&
-                !imageService.isCollectionOwnedByUser(customUserDetails.getId(), collectionId)) {
+                imageService.isCollectionOwnedByUser(customUserDetails.getId(), collectionId)) {
             return ResponseEntity.status(403).body("You do not have permission to access this collection.");
         }
 
@@ -128,7 +128,7 @@ public class ImageController {
                                                   @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         // Validate that the user can delete the collection
         if (!userService.isAdminOrHarbinger(customUserDetails.getId()) &&
-                !imageService.isCollectionOwnedByUser(customUserDetails.getId(), collectionId)) {
+                imageService.isCollectionOwnedByUser(customUserDetails.getId(), collectionId)) {
             return ResponseEntity.status(403).body("You do not have permission to delete this collection.");
         }
 
@@ -153,7 +153,7 @@ public class ImageController {
                                              @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         // Validate that the user can delete the image
         if (!userService.isAdminOrHarbinger(customUserDetails.getId()) &&
-                !imageService.isCollectionOwnedByUser(customUserDetails.getId(), collectionId)) {
+                imageService.isCollectionOwnedByUser(customUserDetails.getId(), collectionId)) {
             return ResponseEntity.status(403).body("You do not have permission to delete this image.");
         }
 
@@ -181,7 +181,7 @@ public class ImageController {
                                          @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         // Validate that the user can update the image
         if (!userService.isAdminOrHarbinger(customUserDetails.getId()) &&
-                !imageService.isCollectionOwnedByUser(customUserDetails.getId(), collectionId)) {
+                imageService.isCollectionOwnedByUser(customUserDetails.getId(), collectionId)) {
             return ResponseEntity.status(403).body("You do not have permission to update this image.");
         }
 
@@ -210,7 +210,7 @@ public class ImageController {
                                                     @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         // Validate that the user can update the collection status
         if (!userService.isAdminOrHarbinger(customUserDetails.getId()) &&
-                !imageService.isCollectionOwnedByUser(customUserDetails.getId(), collectionId)) {
+                imageService.isCollectionOwnedByUser(customUserDetails.getId(), collectionId)) {
             return ResponseEntity.status(403).body("You do not have permission to update this collection's status.");
         }
 
