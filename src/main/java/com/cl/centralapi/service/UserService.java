@@ -70,12 +70,9 @@ public class UserService {
         return userRepository.save(existingUser);
     }
 
-
-
     public Optional<User> findById(Long id) {
         return userRepository.findById(id);
     }
-
 
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
@@ -112,4 +109,11 @@ public class UserService {
         return user.getUserType().equals(UserType.CL_ADMIN) || user.getUserType().equals(UserType.HARBINGER);
     }
 
+    // Check if the user is an admin or Harbinger
+    public boolean isHarbinger(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        return user.getUserType().equals(UserType.HARBINGER);
+    }
 }

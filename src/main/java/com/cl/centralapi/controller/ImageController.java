@@ -116,55 +116,6 @@ public class ImageController {
         }
     }
 
-    @Operation(summary = "Delete an image collection", description = "This endpoint allows you to delete an image collection along with all images in it.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Collection deleted successfully"),
-            @ApiResponse(responseCode = "404", description = "Collection not found"),
-            @ApiResponse(responseCode = "403", description = "Forbidden"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
-    @DeleteMapping("/collections/{collectionId}")
-    public ResponseEntity<?> deleteCollectionById(@PathVariable Long collectionId,
-                                                  @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        // Validate that the user can delete the collection
-        if (!userService.isAdminOrHarbinger(customUserDetails.getId()) &&
-                imageService.isCollectionOwnedByUser(customUserDetails.getId(), collectionId)) {
-            return ResponseEntity.status(403).body("You do not have permission to delete this collection.");
-        }
-
-        try {
-            imageService.deleteCollectionById(collectionId);
-            return ResponseEntity.status(204).build(); // No content for successful deletion
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(404).body("Collection not found");
-        }
-    }
-
-    @Operation(summary = "Delete an image", description = "This endpoint allows you to delete an individual image from a collection.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Image deleted successfully"),
-            @ApiResponse(responseCode = "404", description = "Image not found"),
-            @ApiResponse(responseCode = "403", description = "Forbidden"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
-    @DeleteMapping("/collections/{collectionId}/images/{imageId}")
-    public ResponseEntity<?> deleteImageById(@PathVariable Long collectionId,
-                                             @PathVariable Long imageId,
-                                             @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        // Validate that the user can delete the image
-        if (!userService.isAdminOrHarbinger(customUserDetails.getId()) &&
-                imageService.isCollectionOwnedByUser(customUserDetails.getId(), collectionId)) {
-            return ResponseEntity.status(403).body("You do not have permission to delete this image.");
-        }
-
-        try {
-            imageService.deleteImage(collectionId, imageId);
-            return ResponseEntity.status(204).build(); // No content for successful deletion
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(404).body("Image not found");
-        }
-    }
-
     @Operation(summary = "Update image details", description = "This endpoint allows you to update the metadata associated with an image")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Update successful",
@@ -221,6 +172,85 @@ public class ImageController {
             return ResponseEntity.status(404).body("Collection not found");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error updating collection status: " + e.getMessage());
+        }
+    }
+
+
+    @Operation(summary = "Delete an image", description = "This endpoint allows you to delete an individual image from a collection.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Image deleted successfully"),
+            @ApiResponse(responseCode = "404", description = "Image not found"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @DeleteMapping("/collections/{collectionId}/images/{imageId}")
+    public ResponseEntity<?> deleteImageById(@PathVariable Long collectionId,
+                                             @PathVariable Long imageId,
+                                             @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        // Validate that the user can delete the image
+        if (!userService.isHarbinger(customUserDetails.getId())) {
+            return ResponseEntity.status(403).body("You do not have permission to delete this image.");
+        }
+        try {
+            imageService.deleteImage(collectionId, imageId);
+            return ResponseEntity.status(204).build(); // No content for successful deletion
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(404).body("Image not found");
+        }
+    }
+
+    // Archive an image by ID
+    @Operation(summary = "Archive an image", description = "This endpoint allows you to archive an individual image in a collection.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Image archived successfully"),
+            @ApiResponse(responseCode = "404", description = "Image or Collection not found"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @PatchMapping("/collections/{collectionId}/images/{imageId}/archive")
+    public ResponseEntity<?> archiveImageById(@PathVariable Long collectionId,
+                                              @PathVariable Long imageId,
+                                              @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        if (!userService.isAdminOrHarbinger(customUserDetails.getId()) &&
+                !ImageService.isCollectionOwnedByUser(customUserDetails.getId(), collectionId)) {
+            return ResponseEntity.status(403).body("You do not have permission to archive this image.");
+        }
+
+        try {
+            // Archive the image by its imageId
+            imageService.archiveImageById(imageId);
+            return ResponseEntity.status(204).build();  // Return 204 No Content on success
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(404).body("Image or Collection not found");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Internal server error");
+        }
+    }
+
+    // Un-Archive an image by ID
+    @Operation(summary = "Restore an image", description = "This endpoint allows you to restore an individual image in a collection.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Image archived successfully"),
+            @ApiResponse(responseCode = "404", description = "Image or Collection not found"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @PatchMapping("/collections/{collectionId}/images/{imageId}/reactivate")
+    public ResponseEntity<?> reactivateImageById(@PathVariable Long collectionId,
+                                              @PathVariable Long imageId,
+                                              @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        if (!userService.isAdminOrHarbinger(customUserDetails.getId()) &&
+                !ImageService.isCollectionOwnedByUser(customUserDetails.getId(), collectionId)) {
+            return ResponseEntity.status(403).body("You do not have permission to archive this image.");
+        }
+
+        try {
+            imageService.reactivateImageById(imageId);
+            return ResponseEntity.status(204).build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(404).body("Image or Collection not found");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Internal server error");
         }
     }
 }

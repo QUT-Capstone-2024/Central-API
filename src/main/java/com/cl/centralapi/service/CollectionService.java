@@ -101,4 +101,19 @@ public class CollectionService {
         return collectionRepository.findByPropertyAddressContainingIgnoreCase(addressQuery);
     }
 
+    // Archive a collection
+    public void archiveCollectionById(Long collectionId) {
+        Collection collection = collectionRepository.findById(collectionId)
+                .orElseThrow(() -> new IllegalArgumentException("Collection not found"));
+        collection.setStatus("ARCHIVED");
+        collectionRepository.save(collection);
+    }
+
+    // Un-archive a collection
+    public void reactivateCollectionById(Long collectionId) {
+        Collection collection = collectionRepository.findById(collectionId)
+                .orElseThrow(() -> new IllegalArgumentException("Collection not found"));
+        collection.setStatus("ACTIVE");
+        collectionRepository.save(collection);
+    }
 }

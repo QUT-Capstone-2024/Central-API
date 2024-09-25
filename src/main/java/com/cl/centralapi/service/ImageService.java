@@ -38,7 +38,7 @@ public class ImageService {
     private UserRepository userRepository;
 
     @Autowired
-    private CollectionRepository collectionRepository;
+    private static CollectionRepository collectionRepository;
 
     @Autowired
     private ImageRepository imageRepository;
@@ -208,6 +208,7 @@ public class ImageService {
                 0, // parkingSpaces (default)
                 Status.PENDING, // approvalStatus (default)
                 "unknown", // propertyType (default)
+                "ACTIVE",
                 new ArrayList<>() // image list (initially empty)
         );
         collection.setUser(user); // Ensure user is associated with the collection
@@ -235,15 +236,17 @@ public class ImageService {
                 .collect(Collectors.toList());
     }
 
+    public List<Image> getImagesByCollectionIdAndStatus(Long collectionId, Status imageStatus) {
+        return imageRepository.findByCollectionIdAndImageStatus(collectionId, imageStatus);
+    }
 
-    public boolean isCollectionOwnedByUser(Long userId, Long collectionId) {
+    public static boolean isCollectionOwnedByUser(Long userId, Long collectionId) {
         Collection collection = collectionRepository.findById(collectionId)
                 .orElseThrow(() -> new IllegalArgumentException("Collection not found"));
 
         Long collectionOwnerId = collection.getUser().getId();
         return collectionOwnerId == null || !collectionOwnerId.equals(userId);
     }
-
 
     public boolean isUserAdmin(Long userId) {
         User user = userRepository.findById(userId)
@@ -252,7 +255,6 @@ public class ImageService {
         // Check if the user is either CL_ADMIN or HARBINGER
         return user.getUserType().equals(UserType.CL_ADMIN) || user.getUserType().equals(UserType.HARBINGER);
     }
-
 
     public void deleteCollectionById(Long collectionId) {
         Collection collection = collectionRepository.findById(collectionId)
@@ -277,8 +279,6 @@ public class ImageService {
         // Recalculate collection status
         autoUpdateCollectionStatus(collection.getId());
     }
-
-
 
     public void updateImage(Long imageId, Image updatedImage) {
         Image existingImage = imageRepository.findById(imageId)
@@ -381,4 +381,23 @@ public class ImageService {
         // Generate a unique image ID, implementation can vary
         return "img" + System.currentTimeMillis(); // Example implementation
     }
+
+    public void archiveImageById(Long imageId) {
+        Image image = imageRepository.findById(imageId)
+                .orElseThrow(() -> new IllegalArgumentException("Image not found"));
+
+        image.setStatus("ARCHIVED");
+
+        imageRepository.save(image);
+    }
+
+    public void reactivateImageById(Long imageId) {
+        Image image = imageRepository.findById(imageId)
+                .orElseThrow(() -> new IllegalArgumentException("Image not found"));
+
+        image.setStatus("ACTIVE");
+
+        imageRepository.save(image);
+    }
+
 }
