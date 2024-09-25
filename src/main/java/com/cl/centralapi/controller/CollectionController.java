@@ -129,21 +129,23 @@ public class CollectionController {
     })
     @PutMapping("/{id}")
     public ResponseEntity<?> updateCollection(@PathVariable Long id, @RequestBody Collection updatedCollection, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        Optional<Collection> collection = collectionService.findById(id);
+        Optional<Collection> collectionOpt = collectionService.findById(id);
 
-        if (collection.isPresent()) {
-            Collection col = collection.get();
-            if (!userService.isAdminOrHarbinger(customUserDetails.getId()) &&
-                    !collectionService.isCollectionOwnedByUser(customUserDetails.getId(), id)) {
-                return ResponseEntity.status(403).body("You do not have permission to update this collection.");
-            }
+        if (collectionOpt.isPresent()) {
+            Collection collection = collectionOpt.get();
 
+            // Set the authenticated user as the new owner
+            collection.setUser(userService.findById(customUserDetails.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("User not found")));
+
+            // Perform the update
             Collection savedCollection = collectionService.updateCollection(id, updatedCollection);
             return ResponseEntity.ok(savedCollection);
         } else {
             return ResponseEntity.status(404).body("Collection not found");
         }
     }
+
 
     // Delete collection by ID
     @Operation(summary = "Delete collection", description = "This endpoint allows you to delete a collection by its ID.")
@@ -168,6 +170,22 @@ public class CollectionController {
         } else {
             return ResponseEntity.status(404).body("Collection not found");
         }
+    }
+
+    @Operation(summary = "Search collections", description = "Search collections based on a search query")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Collections retrieved successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Collection.class))),
+            @ApiResponse(responseCode = "404", description = "No collections found", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)
+    })
+    @GetMapping("/search")
+    public ResponseEntity<List<Collection>> searchCollections(@RequestParam("address") String address) {
+        List<Collection> collections = collectionService.searchCollectionsByAddress(address);
+        if (collections.isEmpty()) {
+            return ResponseEntity.status(404).body(Collections.emptyList());
+        }
+        return ResponseEntity.ok(collections);
     }
 }
 
