@@ -7,5 +7,9 @@ import java.util.List;
 
 public interface ImageRepository extends JpaRepository<Image, Long> {
     List<Image> findByCollectionId(Long collectionId);
+
+    List<Image> findByCollectionIdAndImageStatus(Long collectionId, Status imageStatus);
+
+
     List<Image> findByImageStatus(Status status);
 }

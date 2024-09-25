@@ -124,7 +124,7 @@ public class UserController {
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        if (!userService.isAdminOrHarbinger(customUserDetails.getId())) {
+        if (!userService.isHarbinger(customUserDetails.getId())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You do not have permission to delete this user.");
         }
         userService.deleteUserById(id);
@@ -175,8 +175,6 @@ public class UserController {
         }
     }
 
-
-    // Add a route for getting all users
     @Operation(summary = "Get all users", description = "This endpoint retrieves a list of all users.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Users retrieved successfully",
@@ -210,6 +208,7 @@ public class UserController {
         List<User> users = userService.getUsersByStatus(UserStatus.ARCHIVED);
         return ResponseEntity.ok(users);
     }
+
     @Operation(summary = "Get active users", description = "This endpoint retrieves all active users.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Active users retrieved successfully",

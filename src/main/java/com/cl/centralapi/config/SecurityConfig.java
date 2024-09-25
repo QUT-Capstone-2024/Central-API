@@ -54,6 +54,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/users").permitAll()
                         .requestMatchers("/api/images/upload").permitAll()
                         .requestMatchers("/api/images/collections").permitAll()
+                        .requestMatchers("/api/images/collections/**").permitAll()
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
                         .anyRequest().authenticated()
                 )
@@ -73,7 +74,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "https://localhost:3000"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With", "Origin", "Accept"));
         configuration.setAllowCredentials(true);
 

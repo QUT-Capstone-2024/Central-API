@@ -3,9 +3,9 @@ package com.cl.centralapi.enums;
 public enum ImageTags {
     BATHROOM,
     BEDROOM,
-    DINNING_ROOM,
+    DINNING,
     KITCHEN,
-    LIVING_ROOM,
+    LIVINGROOM,
     STREET,
     OTHER
 }

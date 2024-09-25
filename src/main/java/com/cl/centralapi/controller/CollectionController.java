@@ -18,7 +18,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +28,7 @@ import java.util.Optional;
 @RequestMapping("/api/collections")
 @Tag(name = "Collection Management", description = "Endpoints for managing collections")
 public class CollectionController {
+    private static final Logger logger = LoggerFactory.getLogger(CollectionController.class);
 
     @Autowired
     private CollectionService collectionService;
@@ -127,6 +129,7 @@ public class CollectionController {
             @ApiResponse(responseCode = "404", description = "Collection not found", content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)
     })
+
     @PutMapping("/{id}")
     public ResponseEntity<?> updateCollection(@PathVariable Long id, @RequestBody Collection updatedCollection, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         Optional<Collection> collectionOpt = collectionService.findById(id);
@@ -145,7 +148,6 @@ public class CollectionController {
             return ResponseEntity.status(404).body("Collection not found");
         }
     }
-
 
     // Delete collection by ID
     @Operation(summary = "Delete collection", description = "This endpoint allows you to delete a collection by its ID.")
@@ -172,6 +174,53 @@ public class CollectionController {
         }
     }
 
+    // Archive collection by ID
+    @Operation(summary = "Archive an image collection", description = "This endpoint allows you to archive an image collection along with all images in it.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Collection archived successfully"),
+            @ApiResponse(responseCode = "404", description = "Collection not found"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @PatchMapping("/{collectionId}/archive")
+    public ResponseEntity<?> archiveCollectionById(@PathVariable Long collectionId,
+                                                   @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        if (!userService.isAdminOrHarbinger(customUserDetails.getId()) &&
+                !collectionService.isCollectionOwnedByUser(customUserDetails.getId(), collectionId)) {
+            return ResponseEntity.status(403).body("You do not have permission to archive this collection.");
+        }
+        try {
+            collectionService.archiveCollectionById(collectionId);
+            return ResponseEntity.status(204).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Internal server error");
+        }
+    }
+
+    // un-Archive collection by ID
+    @Operation(summary = "Archive an image collection", description = "This endpoint allows you to archive an image collection along with all images in it.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Collection archived successfully"),
+            @ApiResponse(responseCode = "404", description = "Collection not found"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @PatchMapping("/{collectionId}/reactivate")
+    public ResponseEntity<?> reactivateCollectionById(@PathVariable Long collectionId,
+                                                   @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        if (!userService.isAdminOrHarbinger(customUserDetails.getId()) &&
+                !collectionService.isCollectionOwnedByUser(customUserDetails.getId(), collectionId)) {
+            return ResponseEntity.status(403).body("You do not have permission to archive this collection.");
+        }
+        try {
+            collectionService.reactivateCollectionById(collectionId);
+            return ResponseEntity.status(204).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Internal server error");
+        }
+    }
+
+    // Find a collection by address
     @Operation(summary = "Search collections", description = "Search collections based on a search query")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Collections retrieved successfully",
