@@ -212,9 +212,10 @@ public class ImageController {
                                               @PathVariable Long imageId,
                                               @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         if (!userService.isAdminOrHarbinger(customUserDetails.getId()) &&
-                !ImageService.isCollectionOwnedByUser(customUserDetails.getId(), collectionId)) {
+                !imageService.isCollectionOwnedByUser(customUserDetails.getId(), collectionId)) {
             return ResponseEntity.status(403).body("You do not have permission to archive this image.");
         }
+
 
         try {
             // Archive the image by its imageId
@@ -240,7 +241,7 @@ public class ImageController {
                                               @PathVariable Long imageId,
                                               @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         if (!userService.isAdminOrHarbinger(customUserDetails.getId()) &&
-                !ImageService.isCollectionOwnedByUser(customUserDetails.getId(), collectionId)) {
+                !imageService.isCollectionOwnedByUser(customUserDetails.getId(), collectionId)) {
             return ResponseEntity.status(403).body("You do not have permission to archive this image.");
         }
 

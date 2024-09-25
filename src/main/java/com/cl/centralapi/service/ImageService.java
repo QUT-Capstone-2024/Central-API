@@ -38,7 +38,7 @@ public class ImageService {
     private UserRepository userRepository;
 
     @Autowired
-    private static CollectionRepository collectionRepository;
+    private CollectionRepository collectionRepository;
 
     @Autowired
     private ImageRepository imageRepository;
@@ -240,7 +240,7 @@ public class ImageService {
         return imageRepository.findByCollectionIdAndImageStatus(collectionId, imageStatus);
     }
 
-    public static boolean isCollectionOwnedByUser(Long userId, Long collectionId) {
+    public boolean isCollectionOwnedByUser(Long userId, Long collectionId) {
         Collection collection = collectionRepository.findById(collectionId)
                 .orElseThrow(() -> new IllegalArgumentException("Collection not found"));
 

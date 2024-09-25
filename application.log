@@ -1,0 +1,257 @@
+2024-09-25T15:53:05.850+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:53:05.851+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:53:05.851+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:53:05.854+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:53:05.854+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:53:05.855+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:53:15.874+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:53:15.874+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:53:15.874+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:53:15.875+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:53:15.876+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:53:15.876+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:53:25.892+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:53:25.893+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:53:25.893+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:53:25.895+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:53:25.895+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:53:25.895+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:53:35.915+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:53:35.916+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:53:35.916+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:53:35.919+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:53:35.919+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:53:35.920+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:53:45.942+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:53:45.943+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:53:45.943+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:53:45.945+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:53:45.945+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:53:45.946+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:53:55.966+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:53:55.967+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:53:55.967+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:53:55.968+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:53:55.968+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:53:55.968+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:54:05.985+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:54:05.985+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:54:05.985+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:54:05.988+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:54:05.989+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:54:05.989+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:54:16.011+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:54:16.012+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:54:16.012+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:54:16.013+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:54:16.014+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:54:16.014+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:54:26.025+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:54:26.026+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:54:26.026+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:54:26.027+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:54:26.027+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:54:26.028+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:54:36.048+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:54:36.050+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:54:36.050+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:54:36.054+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:54:36.054+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:54:36.054+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:54:46.062+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:54:46.062+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:54:46.062+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:54:46.064+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:54:46.064+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:54:46.064+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:54:56.082+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:54:56.083+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:54:56.083+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:54:56.085+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:54:56.085+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:54:56.085+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:55:06.106+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:55:06.106+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:55:06.106+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:55:06.108+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:55:06.109+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:55:06.109+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:55:16.127+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:55:16.127+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:55:16.128+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:55:16.130+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:55:16.130+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:55:16.130+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:55:26.147+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:55:26.147+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:55:26.147+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:55:26.149+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:55:26.149+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:55:26.149+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:55:36.160+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:55:36.160+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:55:36.161+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:55:36.162+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:55:36.163+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:55:36.163+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:55:46.182+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:55:46.182+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:55:46.182+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:55:46.184+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:55:46.184+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:55:46.184+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:55:56.192+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:55:56.193+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:55:56.193+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:55:56.194+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:55:56.195+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:55:56.195+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:56:06.216+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:56:06.216+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:56:06.217+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:56:06.219+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:56:06.219+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:56:06.219+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:56:16.233+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:56:16.233+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:56:16.233+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:56:16.235+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:56:16.235+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:56:16.236+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:56:26.251+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:56:26.251+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:56:26.251+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:56:26.253+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:56:26.253+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:56:26.253+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:56:36.267+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:56:36.268+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:56:36.268+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:56:36.271+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:56:36.271+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:56:36.271+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:56:46.282+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:56:46.282+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:56:46.282+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:56:46.284+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:56:46.284+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:56:46.284+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:56:56.295+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:56:56.296+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:56:56.297+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:56:56.300+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:56:56.301+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:56:56.301+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:57:06.326+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:57:06.326+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:57:06.327+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:57:06.330+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:57:06.331+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:57:06.331+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:57:16.343+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:57:16.343+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:57:16.344+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:57:16.347+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:57:16.347+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:57:16.347+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:57:26.365+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:57:26.366+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:57:26.366+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:57:26.369+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:57:26.370+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:57:26.370+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:57:36.392+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:57:36.392+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:57:36.392+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:57:36.395+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:57:36.395+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:57:36.395+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:57:46.417+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:57:46.418+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:57:46.418+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:57:46.419+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:57:46.420+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:57:46.420+10:00 DEBUG 28208 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:57:50.738+10:00  INFO 28208 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-09-25T15:57:50.740+10:00  INFO 28208 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2024-09-25T15:57:50.749+10:00  INFO 28208 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2024-09-25T15:57:56.164+10:00  INFO 23608 --- [main] c.cl.centralapi.CentralApiApplication    : Starting CentralApiApplication using Java 18.0.2 with PID 23608 (C:\Users\SLHan\OneDrive\Desktop\Capstone\Central API\CentralAPI\target\classes started by SLHan in C:\Users\SLHan\OneDrive\Desktop\Capstone\Central API\CentralAPI)
+2024-09-25T15:57:56.166+10:00 DEBUG 23608 --- [main] c.cl.centralapi.CentralApiApplication    : Running with Spring Boot v3.3.2, Spring v6.1.11
+2024-09-25T15:57:56.167+10:00  INFO 23608 --- [main] c.cl.centralapi.CentralApiApplication    : No active profile set, falling back to 1 default profile: "default"
+2024-09-25T15:57:57.227+10:00  INFO 23608 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-09-25T15:57:57.307+10:00  INFO 23608 --- [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 73 ms. Found 3 JPA repository interfaces.
+2024-09-25T15:57:58.168+10:00  INFO 23608 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2024-09-25T15:57:58.183+10:00  INFO 23608 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-09-25T15:57:58.183+10:00  INFO 23608 --- [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.26]
+2024-09-25T15:57:58.271+10:00  INFO 23608 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-09-25T15:57:58.271+10:00  INFO 23608 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2052 ms
+2024-09-25T15:57:58.482+10:00  INFO 23608 --- [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-09-25T15:57:58.592+10:00  INFO 23608 --- [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.5.2.Final
+2024-09-25T15:57:58.658+10:00  INFO 23608 --- [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2024-09-25T15:57:59.015+10:00  INFO 23608 --- [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-09-25T15:57:59.049+10:00  INFO 23608 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2024-09-25T15:57:59.211+10:00  INFO 23608 --- [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@28fa541
+2024-09-25T15:57:59.214+10:00  INFO 23608 --- [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2024-09-25T15:57:59.300+10:00  WARN 23608 --- [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2024-09-25T15:58:00.333+10:00  INFO 23608 --- [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-09-25T15:58:00.423+10:00  INFO 23608 --- [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-09-25T15:58:00.850+10:00 DEBUG 23608 --- [main] c.c.c.security.JwtRequestFilter          : Filter 'jwtRequestFilter' configured for use
+2024-09-25T15:58:01.006+10:00  WARN 23608 --- [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2024-09-25T15:58:01.071+10:00  INFO 23608 --- [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2024-09-25T15:58:01.934+10:00 DEBUG 23608 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : 35 mappings in 'requestMappingHandlerMapping'
+2024-09-25T15:58:02.039+10:00 DEBUG 23608 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Patterns [/webjars/**, /**, /swagger-ui*/*swagger-initializer.js, /swagger-ui*/**] in 'resourceHandlerMapping'
+2024-09-25T15:58:02.104+10:00 DEBUG 23608 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, CorsFilter, LogoutFilter, JwtRequestFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2024-09-25T15:58:02.241+10:00 DEBUG 23608 --- [main] s.w.s.m.m.a.RequestMappingHandlerAdapter : ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2024-09-25T15:58:02.273+10:00 DEBUG 23608 --- [main] .m.m.a.ExceptionHandlerExceptionResolver : ControllerAdvice beans: 2 @ExceptionHandler, 1 ResponseBodyAdvice
+2024-09-25T15:58:02.508+10:00  INFO 23608 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2024-09-25T15:58:02.523+10:00  INFO 23608 --- [main] c.cl.centralapi.CentralApiApplication    : Started CentralApiApplication in 6.959 seconds (process running for 7.626)
+2024-09-25T15:58:02.747+10:00 DEBUG 23608 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:58:02.760+10:00 DEBUG 23608 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:58:02.765+10:00 DEBUG 23608 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:58:02.775+10:00 DEBUG 23608 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:58:02.775+10:00 DEBUG 23608 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:58:02.775+10:00 DEBUG 23608 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:58:07.534+10:00  INFO 23608 --- [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-09-25T15:58:07.534+10:00  INFO 23608 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2024-09-25T15:58:07.534+10:00 DEBUG 23608 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected StandardServletMultipartResolver
+2024-09-25T15:58:07.534+10:00 DEBUG 23608 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected AcceptHeaderLocaleResolver
+2024-09-25T15:58:07.534+10:00 DEBUG 23608 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected FixedThemeResolver
+2024-09-25T15:58:07.535+10:00 DEBUG 23608 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@689504b1
+2024-09-25T15:58:07.535+10:00 DEBUG 23608 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Detected org.springframework.web.servlet.support.SessionFlashMapManager@22599048
+2024-09-25T15:58:07.535+10:00 DEBUG 23608 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2024-09-25T15:58:07.535+10:00  INFO 23608 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2024-09-25T15:58:07.560+10:00 DEBUG 23608 --- [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing OPTIONS /api/images/collections/1/images
+2024-09-25T15:58:07.574+10:00 DEBUG 23608 --- [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Securing GET /api/images/collections/1/images
+2024-09-25T15:58:07.575+10:00 DEBUG 23608 --- [http-nio-8080-exec-2] c.c.c.security.JwtRequestFilter          : Authorization Header: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyVHlwZSI6IkhBUkJJTkdFUiIsInVzZXJSb2xlIjoiSU5URVJOQUwiLCJ1c2VySWQiOiJJTlRFUk5BTCIsInN1YiI6InNpbW9uLmhhbm1lckBleGFtcGxlLmNvbSIsImlhdCI6MTcyNzI0MzI3NSwiZXhwIjoxNzI3MjQ2ODc1fQ.Z2B7SI_gn4_iL37RQFmtjXNPYBoq2rcMEpTTgIaC-qo
+2024-09-25T15:58:07.576+10:00 DEBUG 23608 --- [http-nio-8080-exec-2] c.c.c.security.JwtRequestFilter          : Extracted JWT: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyVHlwZSI6IkhBUkJJTkdFUiIsInVzZXJSb2xlIjoiSU5URVJOQUwiLCJ1c2VySWQiOiJJTlRFUk5BTCIsInN1YiI6InNpbW9uLmhhbm1lckBleGFtcGxlLmNvbSIsImlhdCI6MTcyNzI0MzI3NSwiZXhwIjoxNzI3MjQ2ODc1fQ.Z2B7SI_gn4_iL37RQFmtjXNPYBoq2rcMEpTTgIaC-qo
+2024-09-25T15:58:07.615+10:00 DEBUG 23608 --- [http-nio-8080-exec-2] c.c.c.security.JwtRequestFilter          : Extracted Username from JWT: simon.hanmer@example.com
+2024-09-25T15:58:07.623+10:00 DEBUG 23608 --- [http-nio-8080-exec-2] c.c.c.security.JwtRequestFilter          : JWT Token is valid for user: simon.hanmer@example.com
+2024-09-25T15:58:07.624+10:00 DEBUG 23608 --- [http-nio-8080-exec-2] c.c.c.security.JwtRequestFilter          : SecurityContext updated for user: simon.hanmer@example.com
+2024-09-25T15:58:07.626+10:00 DEBUG 23608 --- [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Secured GET /api/images/collections/1/images
+2024-09-25T15:58:07.627+10:00 DEBUG 23608 --- [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : GET "/api/images/collections/1/images", parameters={}
+2024-09-25T15:58:07.629+10:00 DEBUG 23608 --- [http-nio-8080-exec-2] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.cl.centralapi.controller.ImageController#getImagesByCollectionId(Long, CustomUserDetails)
+2024-09-25T15:58:07.670+10:00 DEBUG 23608 --- [http-nio-8080-exec-2] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2024-09-25T15:58:07.671+10:00 DEBUG 23608 --- [http-nio-8080-exec-2] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [[com.cl.centralapi.model.Image@291f8a09, com.cl.centralapi.model.Image@4c0d8d33]]
+2024-09-25T15:58:07.705+10:00 DEBUG 23608 --- [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2024-09-25T15:58:07.709+10:00 DEBUG 23608 --- [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Securing OPTIONS /api/collections/1
+2024-09-25T15:58:07.714+10:00 DEBUG 23608 --- [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Securing GET /api/collections/1
+2024-09-25T15:58:07.714+10:00 DEBUG 23608 --- [http-nio-8080-exec-4] c.c.c.security.JwtRequestFilter          : Authorization Header: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyVHlwZSI6IkhBUkJJTkdFUiIsInVzZXJSb2xlIjoiSU5URVJOQUwiLCJ1c2VySWQiOiJJTlRFUk5BTCIsInN1YiI6InNpbW9uLmhhbm1lckBleGFtcGxlLmNvbSIsImlhdCI6MTcyNzI0MzI3NSwiZXhwIjoxNzI3MjQ2ODc1fQ.Z2B7SI_gn4_iL37RQFmtjXNPYBoq2rcMEpTTgIaC-qo
+2024-09-25T15:58:07.714+10:00 DEBUG 23608 --- [http-nio-8080-exec-4] c.c.c.security.JwtRequestFilter          : Extracted JWT: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyVHlwZSI6IkhBUkJJTkdFUiIsInVzZXJSb2xlIjoiSU5URVJOQUwiLCJ1c2VySWQiOiJJTlRFUk5BTCIsInN1YiI6InNpbW9uLmhhbm1lckBleGFtcGxlLmNvbSIsImlhdCI6MTcyNzI0MzI3NSwiZXhwIjoxNzI3MjQ2ODc1fQ.Z2B7SI_gn4_iL37RQFmtjXNPYBoq2rcMEpTTgIaC-qo
+2024-09-25T15:58:07.716+10:00 DEBUG 23608 --- [http-nio-8080-exec-4] c.c.c.security.JwtRequestFilter          : Extracted Username from JWT: simon.hanmer@example.com
+2024-09-25T15:58:07.721+10:00 DEBUG 23608 --- [http-nio-8080-exec-4] c.c.c.security.JwtRequestFilter          : JWT Token is valid for user: simon.hanmer@example.com
+2024-09-25T15:58:07.721+10:00 DEBUG 23608 --- [http-nio-8080-exec-4] c.c.c.security.JwtRequestFilter          : SecurityContext updated for user: simon.hanmer@example.com
+2024-09-25T15:58:07.722+10:00 DEBUG 23608 --- [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Secured GET /api/collections/1
+2024-09-25T15:58:07.722+10:00 DEBUG 23608 --- [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : GET "/api/collections/1", parameters={}
+2024-09-25T15:58:07.722+10:00 DEBUG 23608 --- [http-nio-8080-exec-4] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to com.cl.centralapi.controller.CollectionController#getCollectionById(Long, CustomUserDetails)
+2024-09-25T15:58:07.733+10:00 DEBUG 23608 --- [http-nio-8080-exec-4] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [*/*] and supported [application/json, application/*+json]
+2024-09-25T15:58:07.733+10:00 DEBUG 23608 --- [http-nio-8080-exec-4] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [com.cl.centralapi.model.Collection@504f9559]
+2024-09-25T15:58:07.743+10:00 DEBUG 23608 --- [http-nio-8080-exec-4] o.s.web.servlet.DispatcherServlet        : Completed 200 OK
+2024-09-25T15:58:12.794+10:00 DEBUG 23608 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:58:12.795+10:00 DEBUG 23608 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:58:12.795+10:00 DEBUG 23608 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:58:12.797+10:00 DEBUG 23608 --- [scheduling-1] o.s.web.client.RestTemplate              : HTTP POST http://localhost:5000/api/image/classify
+2024-09-25T15:58:12.798+10:00 DEBUG 23608 --- [scheduling-1] o.s.web.client.RestTemplate              : Accept=[application/json, application/*+json]
+2024-09-25T15:58:12.798+10:00 DEBUG 23608 --- [scheduling-1] o.s.web.client.RestTemplate              : Writing [{url=https://visioncore-image-bucket.s3.amazonaws.com/1/pexels-curtis-adams-1694007-3935333.jpg}] as "application/json"
+2024-09-25T15:58:16.010+10:00  INFO 23608 --- [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-09-25T15:58:16.012+10:00  INFO 23608 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2024-09-25T15:58:16.019+10:00  INFO 23608 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
