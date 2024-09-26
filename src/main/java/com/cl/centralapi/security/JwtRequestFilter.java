@@ -1,6 +1,7 @@
 package com.cl.centralapi.security;
 
 import com.cl.centralapi.service.CustomUserDetailsService;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -36,12 +37,19 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             jwt = authorizationHeader.substring(7);
             logger.debug("Extracted JWT: " + jwt);
-            username = jwtUtil.extractUsername(jwt);
-            logger.debug("Extracted Username from JWT: " + username);
+            try {
+                username = jwtUtil.extractUsername(jwt);
+                logger.debug("Extracted Username from JWT: " + username);
+            } catch (ExpiredJwtException ex) {
+                // If the token has expired, set an attribute so the entry point can handle it
+                request.setAttribute("expired", "true");
+                logger.debug("JWT Token has expired");
+            }
         } else {
             logger.debug("JWT Token not found in Authorization Header or Bearer prefix missing.");
         }
 
+        // Proceed only if username is available and SecurityContext doesn't have an authentication
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             var userDetails = this.userDetailsService.loadUserByUsername(username);
             if (jwtUtil.validateToken(jwt, userDetails.getUsername())) {

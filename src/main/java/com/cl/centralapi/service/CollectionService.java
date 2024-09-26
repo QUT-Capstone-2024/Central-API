@@ -77,11 +77,6 @@ public class CollectionService {
         collectionRepository.deleteById(id);
     }
 
-    // Find collections by user ID
-    public List<Collection> findCollectionsByUserId(Long userId) {
-        return collectionRepository.findByUserId(userId);
-    }
-
     // Find all collections (Admin only)
     public List<Collection> findAllCollections() {
         return collectionRepository.findAll();
@@ -115,5 +110,9 @@ public class CollectionService {
                 .orElseThrow(() -> new IllegalArgumentException("Collection not found"));
         collection.setStatus("ACTIVE");
         collectionRepository.save(collection);
+    }
+
+    public List<Collection> findActiveCollectionsByUserId(Long userId) {
+        return collectionRepository.findByUserIdAndStatus(userId, "ACTIVE");
     }
 }
