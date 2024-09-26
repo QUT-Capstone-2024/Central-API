@@ -400,4 +400,8 @@ public class ImageService {
         imageRepository.save(image);
     }
 
+    public List<Image> getActiveImagesByCollectionId(Long collectionId) {
+        String status = "ACTIVE";
+        return imageRepository.findByCollectionIdAndStatus(collectionId, status);
+    }
 }

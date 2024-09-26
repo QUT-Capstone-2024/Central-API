@@ -109,7 +109,7 @@ public class ImageController {
         }
 
         try {
-            List<Image> images = imageService.getImagesByCollectionId(collectionId);
+            List<Image> images = imageService.getActiveImagesByCollectionId(collectionId);
             return ResponseEntity.ok(images);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(404).body("Collection not found");
@@ -211,12 +211,6 @@ public class ImageController {
     public ResponseEntity<?> archiveImageById(@PathVariable Long collectionId,
                                               @PathVariable Long imageId,
                                               @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        if (!userService.isAdminOrHarbinger(customUserDetails.getId()) &&
-                !imageService.isCollectionOwnedByUser(customUserDetails.getId(), collectionId)) {
-            return ResponseEntity.status(403).body("You do not have permission to archive this image.");
-        }
-
-
         try {
             // Archive the image by its imageId
             imageService.archiveImageById(imageId);
