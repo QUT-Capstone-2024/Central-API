@@ -36,7 +36,7 @@ public class CollectionController {
     @Autowired
     private UserService userService;
 
-    // Get collections for a specific user
+    // Get ACTIVE collections for a specific user
     @Operation(summary = "Get collections by user ID", description = "Retrieve all collections for a specific user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Collections retrieved successfully",
@@ -46,16 +46,23 @@ public class CollectionController {
     })
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Collection>> getCollectionsByUserId(@PathVariable Long userId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        // Check if the user is an admin or harbinger, or if the user is requesting their own collections
         if (!userService.isAdminOrHarbinger(customUserDetails.getId()) && !customUserDetails.getId().equals(userId)) {
-            return ResponseEntity.status(403).body(Collections.emptyList());
+            return ResponseEntity.status(403).body(Collections.emptyList()); // Return 403 Forbidden if not authorized
         }
 
-        List<Collection> collections = collectionService.findCollectionsByUserId(userId);
+        // Fetch active collections for the given userId
+        List<Collection> collections = collectionService.findActiveCollectionsByUserId(userId);
+
+        // Return 404 if no active collections are found
         if (collections.isEmpty()) {
             return ResponseEntity.status(404).body(Collections.emptyList());
         }
+
+        // Return 200 OK with the list of active collections
         return ResponseEntity.ok(collections);
     }
+
 
     // Get all collections (Admin only)
     @Operation(summary = "Get all collections", description = "Retrieve all collections, accessible only by admin users")

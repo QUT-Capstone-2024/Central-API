@@ -14,7 +14,7 @@ import java.util.Map;
 
 @Component
 public class JwtUtil {
-    private final String SECRET_KEY = "916rTYTQmRPzV8VqdS8PtIib2C51XKZcP/BPme/UY80"; // Use a base64 encoded secret key
+    private final String SECRET_KEY = "916rTYTQmRPzV8VqdS8PtIib2C51XKZcP/BPme/UY80";
 
     private Key getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
@@ -33,6 +33,7 @@ public class JwtUtil {
                 .setSubject(username)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hour expiration
+//                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 10)) // 10 second expiration for testing
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
