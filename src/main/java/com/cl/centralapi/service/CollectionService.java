@@ -37,6 +37,9 @@ public class CollectionService {
         if (updatedCollection.getPropertySize() != null) {
             existingCollection.setPropertySize(updatedCollection.getPropertySize());
         }
+        if (updatedCollection.getExternalPropertySize() != null) {
+            existingCollection.setExternalPropertySize(updatedCollection.getExternalPropertySize());
+        }
         if (updatedCollection.getId() != null) {
             existingCollection.setId(updatedCollection.getId());
         }
