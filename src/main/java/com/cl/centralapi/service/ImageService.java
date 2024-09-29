@@ -203,6 +203,7 @@ public class ImageService {
                 "default-collection-id", // collectionId (default or generated)
                 0, // propertySize (default)
                 user.getId(), // propertyOwnerId
+                0, // externalPropertySize
                 0, // bedrooms (default)
                 0, // bathrooms (default)
                 0, // parkingSpaces (default)
@@ -304,6 +305,7 @@ public class ImageService {
             existingImage.setDescriptionSummary(updatedImage.getDescriptionSummary());
         }
 
+        System.out.println("Updating status to: " + updatedImage.getImageStatus());
         imageRepository.save(existingImage);
 
         // Automatically update the collection status when image status changes

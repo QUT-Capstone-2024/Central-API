@@ -26,6 +26,9 @@ public class Collection {
     private Integer propertySize;
 
     @Column(nullable = false)
+    private Integer externalPropertySize;
+
+    @Column(nullable = false)
     private Integer bedrooms;
 
     @Column(nullable = false)
@@ -56,7 +59,7 @@ public class Collection {
     public Collection() {}
 
     public Collection(Long id, String propertyDescription, String propertyAddress, String collectionId,
-                      Integer propertySize, Long propertyOwnerId, Integer bedrooms, Integer bathrooms,
+                      Integer propertySize, Long propertyOwnerId, Integer externalPropertySize, Integer bedrooms, Integer bathrooms,
                       Integer parkingSpaces, Status approvalStatus, String propertyType, String status, List<Image> images) {
         this.id = id;
         this.propertyDescription = propertyDescription;
@@ -175,5 +178,13 @@ public class Collection {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Integer getExternalPropertySize() {
+        return externalPropertySize;
+    }
+
+    public void setExternalPropertySize(Integer externalPropertySize) {
+        this.externalPropertySize = externalPropertySize;
     }
 }
