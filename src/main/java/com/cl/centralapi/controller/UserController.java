@@ -1,7 +1,6 @@
 package com.cl.centralapi.controller;
 
 import com.cl.centralapi.enums.UserStatus;
-import com.cl.centralapi.enums.UserType;
 import com.cl.centralapi.exceptions.EmailAlreadyUsedException;
 import com.cl.centralapi.exceptions.UserNotFoundException;
 import com.cl.centralapi.security.CustomUserDetails;
@@ -125,7 +124,7 @@ public class UserController {
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable Long id, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        if (!userService.isAdminOrHarbinger(customUserDetails.getId())) {
+        if (!userService.isHarbinger(customUserDetails.getId())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You do not have permission to delete this user.");
         }
         userService.deleteUserById(id);
@@ -174,5 +173,56 @@ public class UserController {
         } catch (Exception ex) {
             return ResponseEntity.status(500).body("Internal server error");
         }
+    }
+
+    @Operation(summary = "Get all users", description = "This endpoint retrieves a list of all users.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Users retrieved successfully",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = User.class)) }),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = @Content) })
+    @GetMapping("/all")
+    public ResponseEntity<List<User>> getAllUsers(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        // Only CL_ADMIN should be allowed to view all users
+        if (!userService.isAdminOrHarbinger(customUserDetails.getId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+        }
+        List<User> users = userService.findAllUsers();
+        return ResponseEntity.ok(users);
+    }
+
+    @Operation(summary = "Get archived users", description = "This endpoint retrieves all archived users.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Archived users retrieved successfully",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = User.class)) }),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = @Content) })
+    @GetMapping("/status/archived")
+    public ResponseEntity<List<User>> getArchivedUsers(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        // Only CL_ADMIN or HARBINGER should be allowed to view archived users
+        if (!userService.isAdminOrHarbinger(customUserDetails.getId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+        }
+        List<User> users = userService.getUsersByStatus(UserStatus.ARCHIVED);
+        return ResponseEntity.ok(users);
+    }
+
+    @Operation(summary = "Get active users", description = "This endpoint retrieves all active users.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Active users retrieved successfully",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = User.class)) }),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = @Content) })
+    @GetMapping("/status/active")
+    public ResponseEntity<List<User>> getActiveUsers(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        // Only CL_ADMIN or HARBINGER should be allowed to view active users
+        if (!userService.isAdminOrHarbinger(customUserDetails.getId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+        }
+        List<User> users = userService.getUsersByStatus(UserStatus.ACTIVE);
+        return ResponseEntity.ok(users);
     }
 }

@@ -19,12 +19,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private final JwtUtil jwtUtil;
     private final CustomUserDetailsService userDetailsService;
-    private final AuthenticationManager authenticationManager;
 
     public JwtAuthenticationFilter(JwtUtil jwtUtil, CustomUserDetailsService userDetailsService, AuthenticationManager authenticationManager) {
         this.jwtUtil = jwtUtil;
         this.userDetailsService = userDetailsService;
-        this.authenticationManager = authenticationManager;
     }
 
     @Override

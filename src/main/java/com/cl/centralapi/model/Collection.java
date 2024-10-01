@@ -26,6 +26,9 @@ public class Collection {
     private Integer propertySize;
 
     @Column(nullable = false)
+    private Integer externalPropertySize;
+
+    @Column(nullable = false)
     private Integer bedrooms;
 
     @Column(nullable = false)
@@ -40,6 +43,9 @@ public class Collection {
     @Column(nullable = false)
     private String propertyType;
 
+    @Column(nullable = false)
+    private String status = "ACTIVE";
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     @JsonBackReference
@@ -53,8 +59,8 @@ public class Collection {
     public Collection() {}
 
     public Collection(Long id, String propertyDescription, String propertyAddress, String collectionId,
-                      Integer propertySize, Long propertyOwnerId, Integer bedrooms, Integer bathrooms,
-                      Integer parkingSpaces, Status approvalStatus, String propertyType, List<Image> images) {
+                      Integer propertySize, Long propertyOwnerId, Integer externalPropertySize, Integer bedrooms, Integer bathrooms,
+                      Integer parkingSpaces, Status approvalStatus, String propertyType, String status, List<Image> images) {
         this.id = id;
         this.propertyDescription = propertyDescription;
         this.propertyAddress = propertyAddress;
@@ -65,6 +71,7 @@ public class Collection {
         this.parkingSpaces = parkingSpaces;
         this.approvalStatus = approvalStatus != null ? approvalStatus : Status.PENDING;
         this.propertyType = propertyType;
+        this.status = status;
         this.images = images;
     }
 
@@ -163,5 +170,21 @@ public class Collection {
 
     public void setImages(List<Image> images) {
         this.images = images;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Integer getExternalPropertySize() {
+        return externalPropertySize;
+    }
+
+    public void setExternalPropertySize(Integer externalPropertySize) {
+        this.externalPropertySize = externalPropertySize;
     }
 }

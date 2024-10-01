@@ -8,8 +8,10 @@ import java.util.Optional;
 
 public interface CollectionRepository extends JpaRepository<Collection, Long> {
 
-    // Find collections by userId (instead of passing the entire User object)
     List<Collection> findByUserId(Long userId);
 
-    Optional<Collection> findByUserIdAndPropertyAddress(Long userId, String propertyAddress);
+    List<Collection> findByPropertyAddressContainingIgnoreCase(String addressQuery);
+
+    List<Collection> findByUserIdAndStatus(Long userId, String status);
 }
+

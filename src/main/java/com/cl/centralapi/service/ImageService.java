@@ -18,8 +18,6 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import java.util.*;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.HttpEntity;
@@ -27,7 +25,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.core.ParameterizedTypeReference;
 import java.io.IOException;
-import java.net.URI;
 import java.time.ZonedDateTime;
 import java.util.stream.Collectors;
 
@@ -206,11 +203,13 @@ public class ImageService {
                 "default-collection-id", // collectionId (default or generated)
                 0, // propertySize (default)
                 user.getId(), // propertyOwnerId
+                0, // externalPropertySize
                 0, // bedrooms (default)
                 0, // bathrooms (default)
                 0, // parkingSpaces (default)
                 Status.PENDING, // approvalStatus (default)
                 "unknown", // propertyType (default)
+                "ACTIVE",
                 new ArrayList<>() // image list (initially empty)
         );
         collection.setUser(user); // Ensure user is associated with the collection
@@ -238,13 +237,16 @@ public class ImageService {
                 .collect(Collectors.toList());
     }
 
+    public List<Image> getImagesByCollectionIdAndStatus(Long collectionId, Status imageStatus) {
+        return imageRepository.findByCollectionIdAndImageStatus(collectionId, imageStatus);
+    }
 
     public boolean isCollectionOwnedByUser(Long userId, Long collectionId) {
         Collection collection = collectionRepository.findById(collectionId)
                 .orElseThrow(() -> new IllegalArgumentException("Collection not found"));
 
-        Long collectionOwnerId = collection.getId();
-        return collectionOwnerId != null && collectionOwnerId.equals(userId);
+        Long collectionOwnerId = collection.getUser().getId();
+        return collectionOwnerId == null || !collectionOwnerId.equals(userId);
     }
 
     public boolean isUserAdmin(Long userId) {
@@ -254,7 +256,6 @@ public class ImageService {
         // Check if the user is either CL_ADMIN or HARBINGER
         return user.getUserType().equals(UserType.CL_ADMIN) || user.getUserType().equals(UserType.HARBINGER);
     }
-
 
     public void deleteCollectionById(Long collectionId) {
         Collection collection = collectionRepository.findById(collectionId)
@@ -280,8 +281,6 @@ public class ImageService {
         autoUpdateCollectionStatus(collection.getId());
     }
 
-
-
     public void updateImage(Long imageId, Image updatedImage) {
         Image existingImage = imageRepository.findById(imageId)
                 .orElseThrow(() -> new IllegalArgumentException("Image not found"));
@@ -306,6 +305,7 @@ public class ImageService {
             existingImage.setDescriptionSummary(updatedImage.getDescriptionSummary());
         }
 
+        System.out.println("Updating status to: " + updatedImage.getImageStatus());
         imageRepository.save(existingImage);
 
         // Automatically update the collection status when image status changes
@@ -382,5 +382,28 @@ public class ImageService {
     private String generateImageId() {
         // Generate a unique image ID, implementation can vary
         return "img" + System.currentTimeMillis(); // Example implementation
+    }
+
+    public void archiveImageById(Long imageId) {
+        Image image = imageRepository.findById(imageId)
+                .orElseThrow(() -> new IllegalArgumentException("Image not found"));
+
+        image.setStatus("ARCHIVED");
+
+        imageRepository.save(image);
+    }
+
+    public void reactivateImageById(Long imageId) {
+        Image image = imageRepository.findById(imageId)
+                .orElseThrow(() -> new IllegalArgumentException("Image not found"));
+
+        image.setStatus("ACTIVE");
+
+        imageRepository.save(image);
+    }
+
+    public List<Image> getActiveImagesByCollectionId(Long collectionId) {
+        String status = "ACTIVE";
+        return imageRepository.findByCollectionIdAndStatus(collectionId, status);
     }
 }

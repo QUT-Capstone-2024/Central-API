@@ -1,5 +1,6 @@
 package com.cl.centralapi.controller;
 
+import com.cl.centralapi.enums.UserStatus;
 import com.cl.centralapi.model.AuthRequest;
 import com.cl.centralapi.model.AuthenticationResponse;
 import com.cl.centralapi.model.User;
@@ -60,25 +61,35 @@ public class AuthController {
         logger.info("Attempting to authenticate user: {}", authRequest.getEmail());
 
         try {
+            // Attempt authentication
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword())
             );
             logger.info("Authentication successful for user: {}", authRequest.getEmail());
         } catch (AuthenticationException e) {
+            // If authentication fails, return 401 Unauthorized
             logger.error("Authentication failed for user: {}", authRequest.getEmail(), e);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
         }
 
         // Fetch UserDetails and User object
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(authRequest.getEmail());
         User user = userService.findByEmail(authRequest.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        // Check if the user's status is ARCHIVED and prevent login if so
+        if (user.getStatus() == UserStatus.ARCHIVED) {
+            logger.warn("Login attempt by ARCHIVED user: {}", authRequest.getEmail());
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("User account is archived and cannot log in.");
+        }
+
+        // Fetch UserDetails for JWT generation
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(authRequest.getEmail());
 
         // Create a map of extra claims
         Map<String, Object> extraClaims = new HashMap<>();
         extraClaims.put("userType", user.getUserType().name());  // Add userType
         extraClaims.put("userRole", user.getUserRole().name());  // Add userRole
-        extraClaims.put("userId", user.getUserRole().name());  // Add userId
+        extraClaims.put("userId", user.getId());  // Add userId (Fixed from userRole)
 
         // Generate JWT with extra claims
         final String jwt = jwtUtil.generateToken(userDetails.getUsername(), extraClaims);
@@ -89,5 +100,4 @@ public class AuthController {
         logger.info("Generated JWT token for user: {}", authRequest.getEmail());
         return ResponseEntity.ok(response);
     }
-
 }

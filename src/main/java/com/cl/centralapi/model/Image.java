@@ -46,6 +46,9 @@ public class Image {
     @Column(length = 500)
     private String descriptionSummary;
 
+    @Column(nullable = false)
+    private String status = "ACTIVE";
+
     @ManyToOne
     @JoinColumn(name = "collection_id", nullable = false)
     @JsonBackReference
@@ -150,4 +153,11 @@ public class Image {
         this.descriptionSummary = descriptionSummary;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }

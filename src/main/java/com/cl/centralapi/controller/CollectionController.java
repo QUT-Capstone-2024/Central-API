@@ -18,7 +18,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +28,7 @@ import java.util.Optional;
 @RequestMapping("/api/collections")
 @Tag(name = "Collection Management", description = "Endpoints for managing collections")
 public class CollectionController {
+    private static final Logger logger = LoggerFactory.getLogger(CollectionController.class);
 
     @Autowired
     private CollectionService collectionService;
@@ -34,7 +36,7 @@ public class CollectionController {
     @Autowired
     private UserService userService;
 
-    // Get collections for a specific user
+    // Get ACTIVE collections for a specific user
     @Operation(summary = "Get collections by user ID", description = "Retrieve all collections for a specific user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Collections retrieved successfully",
@@ -44,16 +46,23 @@ public class CollectionController {
     })
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Collection>> getCollectionsByUserId(@PathVariable Long userId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        // Check if the user is an admin or harbinger, or if the user is requesting their own collections
         if (!userService.isAdminOrHarbinger(customUserDetails.getId()) && !customUserDetails.getId().equals(userId)) {
-            return ResponseEntity.status(403).body(Collections.emptyList());
+            return ResponseEntity.status(403).body(Collections.emptyList()); // Return 403 Forbidden if not authorized
         }
 
-        List<Collection> collections = collectionService.findCollectionsByUserId(userId);
+        // Fetch active collections for the given userId
+        List<Collection> collections = collectionService.findActiveCollectionsByUserId(userId);
+
+        // Return 404 if no active collections are found
         if (collections.isEmpty()) {
             return ResponseEntity.status(404).body(Collections.emptyList());
         }
+
+        // Return 200 OK with the list of active collections
         return ResponseEntity.ok(collections);
     }
+
 
     // Get all collections (Admin only)
     @Operation(summary = "Get all collections", description = "Retrieve all collections, accessible only by admin users")
@@ -127,17 +136,19 @@ public class CollectionController {
             @ApiResponse(responseCode = "404", description = "Collection not found", content = @Content),
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)
     })
+
     @PutMapping("/{id}")
     public ResponseEntity<?> updateCollection(@PathVariable Long id, @RequestBody Collection updatedCollection, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        Optional<Collection> collection = collectionService.findById(id);
+        Optional<Collection> collectionOpt = collectionService.findById(id);
 
-        if (collection.isPresent()) {
-            Collection col = collection.get();
-            if (!userService.isAdminOrHarbinger(customUserDetails.getId()) &&
-                    !collectionService.isCollectionOwnedByUser(customUserDetails.getId(), id)) {
-                return ResponseEntity.status(403).body("You do not have permission to update this collection.");
-            }
+        if (collectionOpt.isPresent()) {
+            Collection collection = collectionOpt.get();
 
+            // Set the authenticated user as the new owner
+            collection.setUser(userService.findById(customUserDetails.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("User not found")));
+
+            // Perform the update
             Collection savedCollection = collectionService.updateCollection(id, updatedCollection);
             return ResponseEntity.ok(savedCollection);
         } else {
@@ -168,6 +179,69 @@ public class CollectionController {
         } else {
             return ResponseEntity.status(404).body("Collection not found");
         }
+    }
+
+    // Archive collection by ID
+    @Operation(summary = "Archive an image collection", description = "This endpoint allows you to archive an image collection along with all images in it.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Collection archived successfully"),
+            @ApiResponse(responseCode = "404", description = "Collection not found"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @PatchMapping("/{collectionId}/archive")
+    public ResponseEntity<?> archiveCollectionById(@PathVariable Long collectionId,
+                                                   @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        if (!userService.isAdminOrHarbinger(customUserDetails.getId()) &&
+                !collectionService.isCollectionOwnedByUser(customUserDetails.getId(), collectionId)) {
+            return ResponseEntity.status(403).body("You do not have permission to archive this collection.");
+        }
+        try {
+            collectionService.archiveCollectionById(collectionId);
+            return ResponseEntity.status(204).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Internal server error");
+        }
+    }
+
+    // un-Archive collection by ID
+    @Operation(summary = "Archive an image collection", description = "This endpoint allows you to archive an image collection along with all images in it.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Collection archived successfully"),
+            @ApiResponse(responseCode = "404", description = "Collection not found"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @PatchMapping("/{collectionId}/reactivate")
+    public ResponseEntity<?> reactivateCollectionById(@PathVariable Long collectionId,
+                                                   @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        if (!userService.isAdminOrHarbinger(customUserDetails.getId()) &&
+                !collectionService.isCollectionOwnedByUser(customUserDetails.getId(), collectionId)) {
+            return ResponseEntity.status(403).body("You do not have permission to archive this collection.");
+        }
+        try {
+            collectionService.reactivateCollectionById(collectionId);
+            return ResponseEntity.status(204).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Internal server error");
+        }
+    }
+
+    // Find a collection by address
+    @Operation(summary = "Search collections", description = "Search collections based on a search query")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Collections retrieved successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Collection.class))),
+            @ApiResponse(responseCode = "404", description = "No collections found", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content)
+    })
+    @GetMapping("/search")
+    public ResponseEntity<List<Collection>> searchCollections(@RequestParam("address") String address) {
+        List<Collection> collections = collectionService.searchCollectionsByAddress(address);
+        if (collections.isEmpty()) {
+            return ResponseEntity.status(404).body(Collections.emptyList());
+        }
+        return ResponseEntity.ok(collections);
     }
 }
 

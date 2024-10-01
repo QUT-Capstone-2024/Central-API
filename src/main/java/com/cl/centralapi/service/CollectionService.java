@@ -37,6 +37,9 @@ public class CollectionService {
         if (updatedCollection.getPropertySize() != null) {
             existingCollection.setPropertySize(updatedCollection.getPropertySize());
         }
+        if (updatedCollection.getExternalPropertySize() != null) {
+            existingCollection.setExternalPropertySize(updatedCollection.getExternalPropertySize());
+        }
         if (updatedCollection.getId() != null) {
             existingCollection.setId(updatedCollection.getId());
         }
@@ -55,6 +58,9 @@ public class CollectionService {
         if (updatedCollection.getPropertyType() != null) {
             existingCollection.setPropertyType(updatedCollection.getPropertyType());
         }
+        if (updatedCollection.getUser() != null) {
+            existingCollection.setUser(updatedCollection.getUser()); // Set the user (owner)
+        }
 
         // Handle image updates if necessary
         if (updatedCollection.getImages() != null) {
@@ -64,7 +70,6 @@ public class CollectionService {
         return collectionRepository.save(existingCollection);
     }
 
-
     // Find a collection by ID
     public Optional<Collection> findById(Long id) {
         return collectionRepository.findById(id);
@@ -73,11 +78,6 @@ public class CollectionService {
     // Delete a collection by ID
     public void deleteCollectionById(Long id) {
         collectionRepository.deleteById(id);
-    }
-
-    // Find collections by user ID
-    public List<Collection> findCollectionsByUserId(Long userId) {
-        return collectionRepository.findByUserId(userId);
     }
 
     // Find all collections (Admin only)
@@ -91,5 +91,31 @@ public class CollectionService {
                 .orElseThrow(() -> new IllegalArgumentException("Collection not found"));
 
         return collection.getUser().getId().equals(userId);
+    }
+
+    // Service method for searching by address
+    public List<Collection> searchCollectionsByAddress(String addressQuery) {
+        // Search by property address using a case-insensitive match
+        return collectionRepository.findByPropertyAddressContainingIgnoreCase(addressQuery);
+    }
+
+    // Archive a collection
+    public void archiveCollectionById(Long collectionId) {
+        Collection collection = collectionRepository.findById(collectionId)
+                .orElseThrow(() -> new IllegalArgumentException("Collection not found"));
+        collection.setStatus("ARCHIVED");
+        collectionRepository.save(collection);
+    }
+
+    // Un-archive a collection
+    public void reactivateCollectionById(Long collectionId) {
+        Collection collection = collectionRepository.findById(collectionId)
+                .orElseThrow(() -> new IllegalArgumentException("Collection not found"));
+        collection.setStatus("ACTIVE");
+        collectionRepository.save(collection);
+    }
+
+    public List<Collection> findActiveCollectionsByUserId(Long userId) {
+        return collectionRepository.findByUserIdAndStatus(userId, "ACTIVE");
     }
 }
