@@ -190,6 +190,68 @@ public class ImageService {
         return restTemplate.exchange(flaskApiUrl, HttpMethod.POST, requestEntity, new ParameterizedTypeReference<Map<String, Object>>() {});
     }
 
+    @Scheduled(fixedDelay = 10000)  // Every 10 seconds
+    public void summarizeDescriptions() {
+        // Fetch all images that have a description longer than 50 words and no description summary
+        List<Image> imagesToSummarize = imageRepository.findByDescriptionSummaryIsNull(); // Add repository method to fetch these images
+
+        imagesToSummarize.forEach(image -> {
+            if (image.getDescription() != null && countWords(image.getDescription()) > 50) {
+                try {
+                    // Call the Flask API to summarize the description
+                    String summarizedDescription = summarizeDescription(image.getDescription());
+                    image.setDescriptionSummary(summarizedDescription);  // Only update the summary field, not the original description
+                    imageRepository.save(image);  // Save the updated image in the database
+                    System.out.println("Summarized description for image: " + image.getImageId());
+                } catch (Exception e) {
+                    System.err.println("Failed to summarize description: " + e.getMessage());
+                }
+            }
+        });
+    }
+
+    private int countWords(String description) {
+        return description.trim().split("\\s+").length;  // Split the description by spaces to count words
+    }
+
+    // Method to call Flask API for description summarization
+    private String summarizeDescription(String description) throws Exception {
+        String flaskApiUrl = "http://localhost:5100/summarize";  // Make sure you're using the correct port
+
+        // Prepare the JSON payload with the room description
+        Map<String, String> payload = new HashMap<>();
+        payload.put("description", description);
+
+        // Set up the headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        // Create the HTTP entity containing the headers and the payload
+        HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(payload, headers);
+
+        // Create a RestTemplate instance to send the request
+        RestTemplate restTemplate = new RestTemplate();
+
+        // Send the POST request to the Flask API and expect a Map in response
+        ResponseEntity<Map<String, String>> response = restTemplate.exchange(
+                flaskApiUrl,
+                HttpMethod.POST,
+                requestEntity,
+                new ParameterizedTypeReference<Map<String, String>>() {}
+        );
+
+        if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+            String summary = response.getBody().get("summary");
+            System.out.println("Received Summary from Flask API: " + summary);
+            return summary;
+        } else {
+            throw new Exception("Failed to get a valid response from the summarization API.");
+        }
+    }
+
+
+
+
     private Collection createNewCollection(User user, String propertyAddress) {
         // Validate propertyAddress
         if (propertyAddress == null || propertyAddress.trim().isEmpty()) {

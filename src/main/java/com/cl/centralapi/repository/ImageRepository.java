@@ -13,4 +13,6 @@ public interface ImageRepository extends JpaRepository<Image, Long> {
     List<Image> findByCollectionIdAndStatus(Long collectionId, String status);
 
     List<Image> findByImageStatus(Status status);
+
+    List<Image> findByDescriptionSummaryIsNull();
 }
