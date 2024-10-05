@@ -32,7 +32,7 @@ public class JwtUtil {
                 .setClaims(extraClaims) // Include additional claims (like userType) here
                 .setSubject(username)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hour expiration
+                .setExpiration(new Date(System.currentTimeMillis() + 12000 * 60 * 60)) // 12 hour expiration
 //                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 10)) // 10 second expiration for testing
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
