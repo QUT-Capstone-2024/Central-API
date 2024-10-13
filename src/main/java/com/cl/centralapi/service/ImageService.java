@@ -99,6 +99,7 @@ public class ImageService {
 
         // Prepare the response to include both the image URL, confidence levels, and status
         Map<String, Object> response = new HashMap<>();
+        response.put("id", image.getId());
         response.put("imageUrl", imageUrl);
         response.put("imageStatus", image.getImageStatus());
 
@@ -248,9 +249,6 @@ public class ImageService {
             throw new Exception("Failed to get a valid response from the summarization API.");
         }
     }
-
-
-
 
     private Collection createNewCollection(User user, String propertyAddress) {
         // Validate propertyAddress
