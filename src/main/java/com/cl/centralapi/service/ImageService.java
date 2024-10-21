@@ -45,6 +45,9 @@ public class ImageService {
 
     private final String BUCKET_NAME = "visioncore-image-bucket";
 
+    private static final String REGION = "ap-southeast-2";
+
+
     public Map<String, Object> uploadImage(Long userId, Long collectionId, MultipartFile file, ImageTags tag, String customTag, String description, String descriptionSummary, int instanceNumber) throws IOException {
         // Fetch the User object
         User user = userRepository.findById(userId)
@@ -70,7 +73,8 @@ public class ImageService {
                 software.amazon.awssdk.core.sync.RequestBody.fromBytes(file.getBytes()));
 
         // Construct the S3 image URL
-        String imageUrl = "https://" + BUCKET_NAME + ".s3.amazonaws.com/" + key;
+        String imageUrl = "https://" + BUCKET_NAME + ".s3." + REGION + ".amazonaws.com/" + key;
+
 
         // Log the image URL for debugging
         System.out.println("Image URL: " + imageUrl);
